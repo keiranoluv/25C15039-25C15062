@@ -1,0 +1,24 @@
+# Generated PDF and LaTeX build files
+/build/
+/*.pdf
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# Editor temporary files
+*~
+*.swp
+*.swo
+.DS_Store

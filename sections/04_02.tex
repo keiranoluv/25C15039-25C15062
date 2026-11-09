@@ -1,0 +1,88 @@
+\providecolor{resultgray}{gray}{0.94}
+\providecommand{\dsomrunbase}{https://forge.coreweave.com/wandb/keiranoluv-hcmus/DSoM-Reproduction/runs/}
+\providecommand{\dsomlink}[2]{\href{\dsomrunbase#1}{#2}}
+\providecommand{\dsomModalityCell}[2]{\dsomlink{#1}{#2}}
+
+\noindent\textit{Ảnh hưởng của từng phương thức:}
+Nhóm tái lập Table 6 nhằm kiểm tra đóng góp của
+teacher cấu trúc (S), hình ảnh (V), văn bản (D)
+và kết hợp đầy đủ. Trong tất cả cấu hình, student
+chỉ sử dụng cấu trúc ở giai đoạn suy luận
+(Bảng~\ref{tab:dsom_table6_combined}).
+
+\begin{table*}[!t]
+\centering
+\caption{So sánh ablation theo phương thức trên DB15K, MKG-W và MKG-Y (Table 6 trong paper).}
+\label{tab:dsom_table6_combined}
+\begingroup
+\fontsize{7.4}{8.8}\selectfont
+\setlength{\tabcolsep}{2.7pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}ll*{12}{r}@{}}
+\toprule
+\textbf{Cấu hình} & \textbf{Nguồn} & \multicolumn{4}{c}{\textbf{DB15K}}
+& \multicolumn{4}{c}{\textbf{MKG-W}} & \multicolumn{4}{c}{\textbf{MKG-Y}} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}\cmidrule(l){11-14}
+& & \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@3$\uparrow$} & \textbf{H@10$\uparrow$}
+& \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@3$\uparrow$} & \textbf{H@10$\uparrow$}
+& \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@3$\uparrow$} & \textbf{H@10$\uparrow$} \\
+\midrule
+\textbf{DSoM (Full)} & Paper
+& 42.68 & 34.45 & 46.62 & 58.12
+& 40.90 & 33.56 & 43.58 & 55.28
+& 40.02 & 35.67 & 41.70 & 47.71 \\
+\rowcolor{resultgray}
+\cellcolor{white}
+& Tái lập\textsuperscript{\textdagger}
+& \dsomModalityCell{gvpp95st}{41.30}
+& \dsomModalityCell{gvpp95st}{33.17}
+& \dsomModalityCell{gvpp95st}{45.47}
+& \dsomModalityCell{gvpp95st}{56.57}
+& \dsomModalityCell{530tgh0o}{40.58}
+& \dsomModalityCell{530tgh0o}{33.54}
+& \dsomModalityCell{530tgh0o}{43.19}
+& \dsomModalityCell{530tgh0o}{53.73}
+& \dsomModalityCell{2a9t5tjk}{40.69}
+& \dsomModalityCell{2a9t5tjk}{36.01}
+& \dsomModalityCell{2a9t5tjk}{42.41}
+& \dsomModalityCell{2a9t5tjk}{48.99} \\
+\addlinespace[2.5pt]
+w/ S teacher & Paper & 41.34 & 33.46 & 45.29 & 56.39 & 36.81 & 31.02 & 38.79 & 47.99 & 38.33 & 34.92 & 40.14 & 44.24 \\
+\rowcolor{resultgray}
+ \cellcolor{white} & Tái lập & \dsomModalityCell{3fhw62i2}{41.27} & \dsomModalityCell{3fhw62i2}{33.39} & \dsomModalityCell{3fhw62i2}{45.19} & \dsomModalityCell{3fhw62i2}{56.26} & \dsomModalityCell{r01l48al}{36.67} & \dsomModalityCell{r01l48al}{30.90} & \dsomModalityCell{r01l48al}{38.66} & \dsomModalityCell{r01l48al}{47.87} & \dsomModalityCell{nzkmmg3e}{38.27} & \dsomModalityCell{nzkmmg3e}{34.92} & \dsomModalityCell{nzkmmg3e}{40.09} & \dsomModalityCell{nzkmmg3e}{44.18} \\
+\addlinespace[2.5pt]
+w/ V teacher & Paper & 37.36 & 30.19 & 40.92 & 51.03 & 31.18 & 25.92 & 33.53 & 40.84 & 33.92 & 30.79 & 35.09 & 39.05 \\
+\rowcolor{resultgray}
+ \cellcolor{white} & Tái lập & \dsomModalityCell{2cxoh1z2}{38.11} & \dsomModalityCell{2cxoh1z2}{30.62} & \dsomModalityCell{2cxoh1z2}{42.05} & \dsomModalityCell{2cxoh1z2}{52.54} & \dsomModalityCell{p2mlr7xq}{29.57} & \dsomModalityCell{p2mlr7xq}{24.73} & \dsomModalityCell{p2mlr7xq}{31.59} & \dsomModalityCell{p2mlr7xq}{38.42} & \dsomModalityCell{qfy1moa8}{37.59} & \dsomModalityCell{qfy1moa8}{34.45} & \dsomModalityCell{qfy1moa8}{39.00} & \dsomModalityCell{qfy1moa8}{42.92} \\
+\addlinespace[2.5pt]
+w/ D teacher & Paper & 41.30 & 32.87 & 45.25 & 57.48 & 39.23 & 31.50 & 41.94 & 54.05 & 37.29 & 32.73 & 39.24 & 45.16 \\
+\rowcolor{resultgray}
+ \cellcolor{white} & Tái lập & \dsomModalityCell{jxfadxq5}{38.18} & \dsomModalityCell{jxfadxq5}{30.49} & \dsomModalityCell{jxfadxq5}{41.86} & \dsomModalityCell{jxfadxq5}{52.79} & \dsomModalityCell{yf4oiilt}{40.06} & \dsomModalityCell{yf4oiilt}{32.62} & \dsomModalityCell{yf4oiilt}{42.86} & \dsomModalityCell{yf4oiilt}{54.26} & \dsomModalityCell{z59nahld}{38.45} & \dsomModalityCell{z59nahld}{33.36} & \dsomModalityCell{z59nahld}{40.33} & \dsomModalityCell{z59nahld}{47.22} \\
+\bottomrule
+\end{tabular}
+\endgroup
+\par\smallskip
+
+\begin{minipage}{0.98\textwidth}
+\scriptsize
+S/V/D lần lượt là teacher cấu trúc, hình ảnh
+và văn bản. Các cấu hình đơn sử dụng fixed teacher
+với NDKD; student chỉ dùng cấu trúc khi suy luận.
+
+\textsuperscript{\textdagger}
+DSoM tái lập trong bảng này sử dụng
+\texttt{source\_frozen} RC (policy không được cập nhật).
+Trong Bảng~\ref{tab:dsom_table4}, DSoM sử dụng
+\texttt{learned\_RC} (policy được huấn luyện),
+nên hai kết quả không thuộc cùng một cấu hình.
+\end{minipage}
+\end{table*}
+\FloatBarrier
+
+Kết quả tái lập cho thấy DSoM đầy đủ đạt MRR cao nhất
+trên cả ba bộ dữ liệu. Tuy nhiên, trên DB15K,
+MRR chỉ cao hơn Structure-only 0.03 điểm phần trăm,
+trong khi Hits@1 thấp hơn 0.22 điểm phần trăm.
+So với teacher đơn tốt nhất, MRR trên MKG-W và MKG-Y
+cải thiện lần lượt 0.52 và 2.24 điểm phần trăm.
+Các kết quả mới được ghi nhận với một random seed.

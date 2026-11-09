@@ -1,0 +1,73 @@
+% Compile this file as the project root.
+% \documentclass[conference]{IEEEtran}
+\documentclass[conference,a4paper]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+\addto\captionsvietnamese{%
+    \renewcommand{\refname}{Tài liệu tham khảo}%
+}
+
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{float}  
+
+\definecolor{resultgray}{RGB}{238,238,238}
+\definecolor{deltared}{RGB}{180,40,40}
+\definecolor{deltagreen}{RGB}{0,120,65}
+\usepackage{array}
+\usepackage{placeins}
+
+\newcommand{\cateearun}[2]{%
+  \cellcolor{resultgray}%
+  \href{https://forge.coreweave.com/wandb/keiranoluv-hcmus/cateea-reproduction/runs/#1}{#2}%
+}
+
+\newcommand{\reprocell}[1]{\cellcolor{gray!12}#1}
+
+\newcommand{\dsomrun}[2]{%
+  \cellcolor{resultgray}%
+  \href{https://forge.coreweave.com/wandb/keiranoluv-hcmus/DSoM-Reproduction/runs/#1}{#2}%
+}
+
+\providecolor{resultgray}{gray}{0.94}
+\providecommand{\dsomrunbase}{https://forge.coreweave.com/wandb/keiranoluv-hcmus/DSoM-Reproduction/runs/}
+\providecommand{\dsomrun}[2]{\cellcolor{resultgray}\href{\dsomrunbase#1}{#2}}
+\providecommand{\dsomreprocell}[1]{\cellcolor{resultgray}#1}
+\providecommand{\dsomlink}[2]{\href{\dsomrunbase#1}{#2}}
+% WN9 raw values reference the training run, but were evaluated separately.
+\providecommand{\dsomsource}[2]{\cellcolor{resultgray}\href{\dsomrunbase#1}{#2}\textsuperscript{\textdagger}}
+\providecommand{\deltaneg}[1]{\textcolor{red!70!black}{#1}}
+\providecommand{\deltapos}[1]{\textcolor{green!45!black}{#1}}
+
+\usepackage{algorithmic}
+
+
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+\begin{document}
+\input{frontmatter/title_authors}
+\maketitle
+\pagestyle{plain}
+\thispagestyle{plain}
+\input{frontmatter/abstract_keywords}
+\input{sections/01}
+\input{sections/02}
+\input{sections/03}
+\input{sections/04}
+\input{sections/05.tex}
+% \clearpage
+\input{references/references}
+\end{document}

@@ -1,0 +1,66 @@
+\noindent\textit{Đóng góp của các thành phần:}
+Nhóm đối chiếu thí nghiệm ablation trong Table 4 nhằm
+kiểm tra vai trò của cơ chế lựa chọn teacher (RC) và
+các hàm distillation. Ba cấu hình đầu đánh giá trực tiếp
+teacher hoặc tổ hợp teacher; các cấu hình còn lại huấn luyện
+student. Kết quả Paper và Tái lập được trình bày cạnh nhau
+trong Bảng~\ref{tab:dsom_table4}.
+
+\begin{table*}[!t]
+\centering
+\caption{So sánh ablation các thành phần trên DB15K (Table 4 trong paper); MRR và Hits@K (\%).}
+\label{tab:dsom_table4}
+\scriptsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}l@{\hspace{10pt}}rrrr@{\hspace{13pt}}
+>{\columncolor{resultgray}}r
+>{\columncolor{resultgray}}r
+>{\columncolor{resultgray}}r
+>{\columncolor{resultgray}}r@{}}
+\toprule
+& \multicolumn{4}{c}{\textbf{Paper}}
+& \multicolumn{4}{>{\columncolor{resultgray}}c}{\textbf{Tái lập}} \\
+\cmidrule(lr){2-5}\cmidrule(l){6-9}
+\textbf{Cấu hình}
+& \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@3$\uparrow$} & \textbf{H@10$\uparrow$}
+& \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@3$\uparrow$} & \textbf{H@10$\uparrow$} \\
+\midrule
+Teacher Avg. & 37.64 & 28.14 & 39.60 & 51.63 & \dsomlink{69tufeey}{24.27} & \dsomlink{69tufeey}{18.38} & \dsomlink{69tufeey}{26.53} & \dsomlink{69tufeey}{35.66} \\
+w/ ML on val. & 40.62 & 32.34 & 44.53 & 55.29 & \dsomlink{1vebd13p}{40.89} & \dsomlink{1vebd13p}{32.95} & \dsomlink{1vebd13p}{44.91} & \dsomlink{1vebd13p}{55.83} \\
+w/ RC on val. & 41.08 & 33.21 & 45.01 & 56.08 & \dsomlink{9p90ll1a}{40.08} & \dsomlink{9p90ll1a}{32.31} & \dsomlink{9p90ll1a}{43.80} & \dsomlink{9p90ll1a}{54.91} \\
+\midrule
+w/ NDKD & 41.91 & 33.69 & 45.83 & 57.56 & \dsomlink{e6i6aw58}{41.31} & \dsomlink{e6i6aw58}{33.28} & \dsomlink{e6i6aw58}{45.26} & \dsomlink{e6i6aw58}{56.49} \\
+w/ RC + $\mathcal{L}_{NEKD}$ & 41.00 & 33.07 & 44.93 & 56.00 & \dsomlink{r7fv735u}{41.10} & \dsomlink{r7fv735u}{33.31} & \dsomlink{r7fv735u}{45.00} & \dsomlink{r7fv735u}{56.00} \\
+w/ RC + $\mathcal{L}_{NNKD}$ & 42.33 & 33.93 & 46.39 & 58.08 & \dsomlink{0prk36n2}{41.21} & \dsomlink{0prk36n2}{33.23} & \dsomlink{0prk36n2}{45.20} & \dsomlink{0prk36n2}{56.38} \\
+w/ RC + Vanilla KD & 42.03 & 33.62 & 46.07 & 57.96 & \dsomlink{9vw2fikt}{41.34} & \dsomlink{9vw2fikt}{33.45} & \dsomlink{9vw2fikt}{45.23} & \dsomlink{9vw2fikt}{56.52} \\
+w/ RC + DKD & 42.31 & 34.00 & 46.16 & 58.07 & \dsomlink{hpruwc92}{41.30} & \dsomlink{hpruwc92}{33.34} & \dsomlink{hpruwc92}{45.23} & \dsomlink{hpruwc92}{56.49} \\
+\midrule
+DSoM (learned RC) & 42.68 & 34.45 & 46.62 & 58.12 & \dsomlink{qqnzvnz2}{41.42} & \dsomlink{qqnzvnz2}{33.52} & \dsomlink{qqnzvnz2}{45.34} & \dsomlink{qqnzvnz2}{56.44} \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.97\textwidth}\scriptsize
+Các kết quả tái lập liên kết đến run W\&B tương ứng.
+Trong các dòng huấn luyện student có RC, nhóm sử dụng
+\texttt{learned\_RC} (policy được cập nhật bằng Adam riêng).
+\textit{w/ NDKD} sử dụng trung bình logits ba teacher.
+\textit{Teacher Avg.} trong bản tái lập là trung bình metric của ba teacher;
+ML/RC on val. được nhóm triển khai với các giả định bổ sung,
+chưa xác nhận hoàn toàn cùng giao thức với paper.
+\end{minipage}
+\end{table*}
+\FloatBarrier
+
+Kết quả tái lập cho thấy DSoM đầy đủ đạt MRR 41.42\%,
+cao nhất trong các cấu hình huấn luyện student,
+phù hợp xu hướng của paper. Tuy nhiên, mức cải thiện
+so với trung bình teacher + NDKD chỉ là 0.11 điểm phần trăm
+(paper: 0.77). Khi chỉ dùng NEKD hoặc NNKD,
+MRR lần lượt đạt 41.10\% và 41.21\%; mức chênh nhỏ
+và chỉ được ghi nhận trên một random seed.
+
+Riêng ba cấu hình đánh giá teacher có giao thức khác với
+student; đặc biệt, sai lệch của Teacher Avg. chưa thể
+quy trực tiếp cho chất lượng mô hình vì cách đánh giá
+chưa được xác nhận tương đương với paper.

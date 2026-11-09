@@ -1,0 +1,94 @@
+
+\begin{table}[H]
+\centering
+\caption{Thực nghiệm bổ sung trên DB15K:
+lựa chọn teacher và distillation; MRR (\%).}
+\label{tab:dsom_ablation}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+
+\begin{tabular}{@{}lll>{\columncolor{resultgray}}r@{}}
+\toprule
+\textbf{Run}
+& \textbf{Teacher selection}
+& \textbf{KD}
+& \textbf{MRR$\uparrow$} \\
+\midrule
+
+Exp01 & Frozen RC & NDKD
+& \dsomlink{gvpp95st}{41.30} \\
+
+A1 & Structure & NDKD
+& \dsomlink{3fhw62i2}{41.27} \\
+
+A2 & Description & NDKD
+& \dsomlink{jxfadxq5}{38.18} \\
+
+A3 & S + D & NDKD
+& \dsomlink{sf7vexg5}{41.37} \\
+
+A4 & Average & NDKD
+& \dsomlink{e6i6aw58}{41.31} \\
+
+A5 & Learned RC & NDKD
+& \dsomlink{qqnzvnz2}{41.42} \\
+
+A6 & RC (CE reward) & NDKD
+& \dsomlink{zuhqedof}{41.29} \\
+
+A7 & S + D & Vanilla KD
+& \dsomlink{i9azqqx2}{\textbf{41.44}} \\
+
+A8 & S + D & DKD
+& \dsomlink{opus98xu}{41.40} \\
+
+A9 & Learned RC & Vanilla KD
+& \dsomlink{9vw2fikt}{41.34} \\
+
+A10 & Learned RC & DKD
+& \dsomlink{hpruwc92}{41.30} \\
+
+\bottomrule
+\end{tabular}
+
+\par\smallskip
+
+\begin{minipage}{0.98\linewidth}
+\scriptsize
+Exp01 giữ nguyên policy RC, trong khi A5
+huấn luyện policy bằng optimizer riêng.
+A3/A7/A8 sử dụng tổ hợp teacher cố định S+D;
+A5/A9/A10 sử dụng learned RC.
+\end{minipage}
+
+
+\end{table}
+
+
+A5 và A6 đều dùng NDKD, cùng checkpoint teacher và các đặc
+trưng đầu vào; student được tối ưu bằng Adagrad với learning
+rate $0.1$, còn policy dùng Adam riêng với learning rate
+$10^{-5}$. Khác biệt cấu hình chính là
+\texttt{rc\_reward\_mode}: A5 dùng \texttt{binary}, còn A6 dùng
+\texttt{continuous\_ce}.
+\footnote{\href{https://github.com/keiranoluv/Reproduce_DSoM/blob/ab1ee9b25f5b3385b5fe0e01d1cfed1f497db18e/scripts/run_db15k_a5_learned_rc_full.sh\#L69-L77}{Cấu hình A5};
+\href{https://github.com/keiranoluv/Reproduce_DSoM/blob/ab1ee9b25f5b3385b5fe0e01d1cfed1f497db18e/scripts/run_db15k_a6_continuous_ce_full.sh\#L69-L77}{cấu hình A6}.}
+A5 dùng reward $+1$ nếu CE của tổ hợp teacher thấp hơn
+student và $-10$ trong trường hợp còn lại. A6 dùng reward
+liên tục và baseline:
+\begin{align*}
+ R_i &= \mathrm{CE}_{\mathrm{stu},i}
+        -\mathrm{CE}_{\mathrm{sel},i},\\
+ \widehat{R}_i &= \mathrm{CE}_{\mathrm{stu},i}
+        -\mathrm{CE}_{\mathrm{avg},i}.
+\end{align*}
+Vì vậy, advantage của A6 là
+$\delta_i=\mathrm{CE}_{\mathrm{avg},i}
+-\mathrm{CE}_{\mathrm{sel},i}$, với ``avg'' là trung bình logits
+của ba teacher.
+\footnote{\href{https://github.com/keiranoluv/Reproduce_DSoM/blob/ab1ee9b25f5b3385b5fe0e01d1cfed1f497db18e/src/kd.py\#L500-L532}{Triển khai reward và advantage của A5/A6.}}
+Đây là biến thể reward do nhóm bổ sung. Trên một seed,
+MRR của A5 và A6 lần lượt là $41.42\%$ và $41.29\%$;
+kết quả này chưa đủ để kết luận về ưu thế ổn định giữa hai
+cách tính reward.
