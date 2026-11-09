@@ -4,7 +4,7 @@
 
 Đối với bài toán MKGR, ngoài cấu trúc quan hệ, mô hình còn có thể sử dụng những thông tin bổ sung như hình ảnh và văn bản để dự đoán thực thể còn thiếu. Tuy nhiên thì việc kết hợp nhiều phương thức không đồng nghĩa với việc toàn bộ các phương thức đều đóng góp tích cực cho mọi dự đoán. Ví dụ một phương thức có thể cung cấp thông tin hữu ích đối với thực thể này nhưng lại chứa thông tin nhiễu hoặc không liên quan tới thực thể khác.
 
-Từ quan sát trên thì paper DSoM tiếp cận bài toán theo hướng chắt lọc tri thức (Knowledge Distillation - KD). (Knowledge Distillation còn có thể được dịch là chưng cất tri thức.) Tác giả xây dựng các mô hình teacher (giáo viên) sử dụng thông tin đa phương thức (cấu trúc, hình ảnh, văn bản) để dạy cho mô hình student (học sinh) mà mô hình student chỉ sử dụng thông tin về cấu trúc thay vì toàn bộ các phương thức khi suy luận.
+Từ quan sát trên thì paper DSoM tiếp cận bài toán theo hướng chắt lọc tri thức (knowledge distillation - KD). (Knowledge distillation còn có thể được dịch là chưng cất tri thức.) Tác giả xây dựng các mô hình teacher (giáo viên) sử dụng thông tin đa phương thức (cấu trúc, hình ảnh, văn bản) để dạy cho mô hình student (học sinh) mà mô hình student chỉ sử dụng thông tin về cấu trúc thay vì toàn bộ các phương thức khi suy luận.
 
 Ở paper này, tác giả không cố định một giáo viên hay kết hợp các giáo viên theo cùng một cách cho toàn bộ dữ liệu (vì như lập luận đầu tiên phía trên, mô hình có thể tiếp nhận cả những dự đoán thiếu chính xác cho một số điểm dữ liệu nào đó). Vì vậy tác giả sử dụng học tăng cường (Reinforcement Learning - RL) để lựa chọn và kết hợp các giáo viên theo từng truy vấn. Cơ chế này giúp student học từ những nguồn tri thức phù hợp hơn với từng trường hợp cụ thể và không xem mọi phương thức đều có giá trị như nhau.
 
@@ -33,7 +33,7 @@ cũng cải thiện chất lượng dự đoán.
     \label{fig:dsom_motivation}
 \end{figure}
 
-Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu, không liên quan như phân tích ở đoạn đầu tiên. Và tác giả cũng định nghĩa ``Dark Knowledge'' là tri thức ẩn trong phân phối dự đoán. Student không chỉ học đáp án đúng mà học cả phân phối xác suất thu được từ logits của teacher.
+Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu, không liên quan như phân tích ở đoạn đầu tiên. Và tác giả cũng định nghĩa ``dark knowledge'' là tri thức ẩn trong phân phối dự đoán. Student không chỉ học đáp án đúng mà học cả phân phối xác suất thu được từ logits của teacher.
 
 
 
@@ -61,7 +61,7 @@ học sinh thông qua NDKD.
 
 \subsubsection{Xây dựng các mô hình giáo viên và học sinh}
 
-Để thực hiện Knowledge Distillation, tác giả sẽ xây dựng các mô hình teacher và student. Trong paper, tác giả xây dựng ba teacher, mỗi teacher sẽ được học từ một nguồn phương thức tương ứng. Cụ thể là một teacher học từ thông tin cấu trúc (structure),
+Để thực hiện knowledge distillation, tác giả sẽ xây dựng các mô hình teacher và student. Trong paper, tác giả xây dựng ba teacher, mỗi teacher sẽ được học từ một nguồn phương thức tương ứng. Cụ thể là một teacher học từ thông tin cấu trúc (structure),
 một teacher học thông tin từ hình ảnh (visual), và một teacher cuối học từ văn bản (textual). Các teacher được huấn luyện trước để dự đoán thực thể còn thiếu.  Theo cách hiểu của nhóm, việc phân chia như vậy giúp mô hình giữ lại được những góc nhìn khác nhau khi đánh giá cùng một truy vấn, thay vì kết hợp toàn bộ
 thông tin ngay từ đầu.
 
@@ -104,12 +104,12 @@ học tăng cường (Reinforcement Learning - RL)
 để lựa chọn và kết hợp các teacher phù hợp
 với từng truy vấn.
 
-Trong cơ chế này, agent không trực tiếp thực hiện bài toán MKGR, tức không dự đoán thực thể còn thiếu. Thay vào đó, agent quyết định những teacher nào sẽ tham gia hướng dẫn student thông qua quá trình Knowledge Distillation.
+Trong cơ chế này, agent không trực tiếp thực hiện bài toán MKGR, tức không dự đoán thực thể còn thiếu. Thay vào đó, agent quyết định những teacher nào sẽ tham gia hướng dẫn student thông qua quá trình knowledge distillation.
 
 
 Để hiểu cách học tăng cường được áp dụng để chọn teacher hợp lý, nhóm phân tích bài toán qua các thành phần state,action, reward và policy.
 
-\textit{a) Trạng thái (State):}
+\paragraph{Trạng thái (state)}
 
 
 Agent cần có thông tin để quyết định nên lựa chọn teacher nào. Trạng thái trong DSoM được tạo bằng cách nối 3 vector logits của ba teacher:
@@ -131,7 +131,7 @@ cho student chính là logits, nên agent sử dụng
 logits để đánh giá sự khác biệt giữa các teacher
 thay vì phải xử lý lại dữ liệu của từng phương thức.
 
-\textit{b) Hành động (Action):}
+\paragraph{Hành động (action)}
 
 Sau khi nhận trạng thái, agent phải quyết định sẽ
 sử dụng những teacher nào.
@@ -173,14 +173,14 @@ F_{\mathrm{tea}}^{(i)}
 
 Trong đó, \(\mathcal{M}_i\) là tập teacher được agent lựa chọn cho mẫu huấn luyện thứ \(i\). Qua đối chiếu mã nguồn, agent thực hiện lựa chọn tổ hợp teacher riêng cho từng mẫu dữ liệu chứ không sử dụng một tổ hợp cố định cho toàn bộ batch. Nhiệm vụ của agent là học cách lựa chọn tổ hợp phù hợp, thay vì trực tiếp học trọng số kết hợp của từng teacher.
 
-Sự khác biệt của phương pháp này so với cách kết hợp bằng trọng số là agent lựa chọn một trong bảy tổ hợp teacher có trước; và các teacher được chọn có trọng số bằng nhau. Chẳng hạn, nếu chọn Structure và Visual, DSoM sẽ lấy trung bình logits của hai teacher với trọng số là 0.5 và 0.5. Còn phương pháp kết hợp trọng số có thể học được giá trị như 0.75 và 0.25, nghĩa là structure đóng góp nhiều hơn visual. (Đã xác nhận điều này trong source code.)
+Sự khác biệt của phương pháp này so với cách kết hợp bằng trọng số là agent lựa chọn một trong bảy tổ hợp teacher có trước; và các teacher được chọn có trọng số bằng nhau. Chẳng hạn, nếu chọn structure và visual, DSoM sẽ lấy trung bình logits của hai teacher với trọng số là 0.5 và 0.5. Còn phương pháp kết hợp trọng số có thể học được giá trị như 0.75 và 0.25, nghĩa là structure đóng góp nhiều hơn visual. (Đã xác nhận điều này trong source code.)
 
-\textit{c) Phần thưởng (Reward):}
+\paragraph{Phần thưởng (reward)}
 
 
 Để biết một tổ hợp teacher được lựa chọn tốt hay không, nhóm sẽ trình bày
 qua phần reward. Reward chính là tín hiệu dùng để đánh giá hành động của agent. Trong paper, tác giả sử dụng
-Cross-Entropy để so sánh kết quả dự đoán của tổ hợp teacher với student:
+cross-entropy để so sánh kết quả dự đoán của tổ hợp teacher với student:
 
 
 \begin{equation}
@@ -192,24 +192,24 @@ R_i=
 \end{equation}
 
 $CE_{\mathrm{tea}}$ và $CE_{\mathrm{stu}}$
-là Cross-Entropy của dự đoán từ tổ hợp teacher và
+là cross-entropy của dự đoán từ tổ hợp teacher và
 student đối với nhãn của mẫu đang xét.
 
-Nếu tổ hợp teacher có Cross-Entropy thấp hơn student, agent được thưởng $+1$, ngược lại bị phạt $-10$. Vì student liên tục được cập nhật, cùng một tổ hợp teacher có thể nhận reward khác nhau trong quá trình huấn luyện.
+Nếu tổ hợp teacher có cross-entropy thấp hơn student, agent được thưởng $+1$, ngược lại bị phạt $-10$. Vì student liên tục được cập nhật, cùng một tổ hợp teacher có thể nhận reward khác nhau trong quá trình huấn luyện.
 
 Nhóm nhận thấy mức phạt lớn gấp mười lần mức thưởng, cho thấy tác giả muốn hạn chế việc lựa chọn những teacher dự đoán kém hơn student. Tuy nhiên, paper chưa giải thích rõ lý do lựa chọn hai giá trị $+1$ và $-10$ này.
 
-Reward được tác giả tính bằng Cross-Entropy, chứ không trực tiếp sử dụng các
+Reward được tác giả tính bằng cross-entropy, chứ không trực tiếp sử dụng các
 metric đánh giá MKGR như MRR hoặc Hits@K. Do đó,
 agent đang học cách lựa chọn teacher dựa trên chất
-lượng dự đoán theo Cross-Entropy, còn việc lựa chọn
+lượng dự đoán theo cross-entropy, còn việc lựa chọn
 này có cải thiện thứ hạng thực thể hay không cần
 được đánh giá thực nghiệm.
 
-\textit{d) Cập nhật chính sách (Policy):}
+\paragraph{Cập nhật chính sách (policy)}
 
 
-Sau khi nhận reward, agent sẽ cập nhật policy để những hành động có lợi có khả năng được chọn cao hơn trong các lần tiếp theo. Tác giả sử dụng Policy Gradient để cập nhật policy này. Ngoài reward của tổ hợp được chọn, mô hình còn xây dựng baseline bằng cách lấy trung bình logits của ba teacher rồi tính reward tương ứng.
+Sau khi nhận reward, agent sẽ cập nhật policy để những hành động có lợi có khả năng được chọn cao hơn trong các lần tiếp theo. Tác giả sử dụng policy gradient để cập nhật policy này. Ngoài reward của tổ hợp được chọn, mô hình còn xây dựng baseline bằng cách lấy trung bình logits của ba teacher rồi tính reward tương ứng.
 
 
 Sự chênh lệch giữa reward của hành động và reward
@@ -246,7 +246,7 @@ lựa chọn nguồn tri thức để hỗ trợ student.
 \subsubsection{Neighbor-Decoupled Knowledge Distillation}
 
 
-Agent đã lựa chọn teacher và tạo ra logits tổng hợp, bước tiếp theo là chuyển những thông tin này sang student. Nếu chỉ lấy thực thể có điểm dự đoán cao nhất từ teacher làm nhãn huấn luyện, student sẽ không học được toàn bộ thông tin trong phân phối dự đoán. Tác giả sử dụng Knowledge Distillation cũng chính vì muốn student học được thông tin trong phân phối dự đoán này.
+Agent đã lựa chọn teacher và tạo ra logits tổng hợp, bước tiếp theo là chuyển những thông tin này sang student. Nếu chỉ lấy thực thể có điểm dự đoán cao nhất từ teacher làm nhãn huấn luyện, student sẽ không học được toàn bộ thông tin trong phân phối dự đoán. Tác giả sử dụng knowledge distillation cũng chính vì muốn student học được thông tin trong phân phối dự đoán này.
 
 
 Logits của teacher và student được
@@ -271,7 +271,7 @@ P_{\mathrm{stu}}&=
 
 Trong MKGR, một truy vấn có thể có nhiều đáp án đúng. Ví dụ với truy vấn $(A,r,?)$, nếu đồ thị tồn tại hai bộ ba $(A,r,B)$ và $(A,r,C)$ thì cả $B$ và $C$ đều là đáp án đúng. Nếu chỉ xét bộ ba $(A,r,B)$, thực thể $C$ có thể bị xem là một đáp án không đúng, mặc dù nó cũng có quan hệ $r$ với $A$.
 
-Trong Knowledge Distillation, phương pháp Decoupled Knowledge Distillation (DKD) phân tách việc học thành thông tin của nhãn đích và các nhãn còn lại. Tuy nhiên, cách phân tách này chưa phù hợp với đặc điểm nhiều đáp án đúng của MKGR. Vì vậy, tác giả đề xuất Neighbor-Decoupled Knowledge Distillation (NDKD), trong đó thay vì chỉ xét một đáp án đúng, mô hình xét toàn bộ tập neighbors:
+Trong knowledge distillation, phương pháp Decoupled Knowledge Distillation (DKD) phân tách việc học thành thông tin của nhãn đích và các nhãn còn lại. Tuy nhiên, cách phân tách này chưa phù hợp với đặc điểm nhiều đáp án đúng của MKGR. Vì vậy, tác giả đề xuất Neighbor-Decoupled Knowledge Distillation (NDKD), trong đó thay vì chỉ xét một đáp án đúng, mô hình xét toàn bộ tập neighbors:
 
 \[
 \mathcal{N}(h,r)=
@@ -298,7 +298,7 @@ giả xây dựng hai thành phần loss.
 
 
 
-\textit{a) Neighbor Entity Knowledge Distillation (NEKD):}
+\paragraph{Neighbor Entity Knowledge Distillation (NEKD)}
 
 Thành phần NEKD giúp student học cách teacher đánh giá nhóm neighbors, thay vì chỉ tập trung vào một đáp án đúng.
 
@@ -322,7 +322,7 @@ b_{\mathrm{stu}}&=[0.15,0.85].
 \end{aligned}
 \end{equation}
 
-Hai phân phối này được so sánh bằng KL Divergence:
+Hai phân phối này được so sánh bằng KL divergence:
 
 \begin{equation}
 \mathcal{L}_{NEKD}
@@ -352,8 +352,7 @@ theo bài báo với cách triển khai thực tế được sử dụng
 
 Một vấn đề mà nhóm nhận ra ở đây là phân phối xác suất của các neighbors được đại diện bởi một giá trị trung bình, nên có thể làm mất thông tin về xác suất của từng thực thể. Ví dụ 1 tập neighbor là $\{A,B,C\}$ có 3 phần tử, teacher dự đoán $[0.3,0.2,0.1]$ và student dự đoán $[0.1,0.3,0.2]$ vẫn cho NEKD loss bằng $0$ (vì trung bình cả hai đều là $0.2$), mặc dù xác suất của từng neighbor khác nhau. Tuy nhiên, điều này chưa hẳn là hạn chế, vì các neighbors đều là đáp án đúng và không nhất thiết phải có cùng thứ tự ưu tiên.
 
-\textit{b) Non-Neighbor Knowledge Distillation
-(NNKD):}
+\paragraph{Non-Neighbor Knowledge Distillation (NNKD)}
 
 Thành phần thứ hai tập trung vào các thực thể không thuộc tập neighbors.
 
@@ -401,8 +400,8 @@ Cuối cùng, hai thành phần được kết hợp:
 
 $\alpha$ và $\beta$ là các hệ số điều chỉnh đóng góp của từng thành phần.
 
-Đóng góp chính của NDKD không phải là việc sử dụng KL Divergence (kỹ
-thuật này đã phổ biến trong Knowledge Distillation) mà là điều chỉnh
+Đóng góp chính của NDKD không phải là việc sử dụng KL divergence (kỹ
+thuật này đã phổ biến trong knowledge distillation) mà là điều chỉnh
 cách phân tách phân phối xác suất để phù hợp
 với trường hợp một truy vấn có nhiều đáp án
 đúng trong MKGR.
@@ -432,7 +431,7 @@ trung bình số lượng teacher trong tổ hợp, sau đó sử dụng trong N
 hướng dẫn student.
 
 Đồng thời, agent nhận reward từ việc so
-sánh Cross-Entropy giữa tổ hợp teacher
+sánh cross-entropy giữa tổ hợp teacher
 và student để cập nhật policy của mình.
 
 Hàm mục tiêu tổng thể trong paper là:
@@ -459,7 +458,7 @@ hàm mục tiêu tổng thể là
 $\mathcal{L}_{stu}=\mathcal{L}_{\mathrm{upd}}+\mathcal{L}_{RC}$.
 
 Loss của agent dùng để học chính sách lựa
-chọn teacher, còn Cross-Entropy và NDKD
+chọn teacher, còn cross-entropy và NDKD
 được sử dụng để huấn luyện student.
 
 Cuối cùng, ở giai đoạn inference, tác giả
@@ -541,7 +540,7 @@ nhóm báo thêm raw trên cùng checkpoint để đối chiếu. Các bộ lọ
 được xây dựng từ các bộ ba huấn luyện và các bộ ba nghịch đảo
 tương ứng.
 
-Giới hạn về dữ liệu: Tập validation của DB15K trong nguồn dữ liệu công khai có các bộ ba trùng với tập huấn luyện và tập kiểm tra. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
+\noindent\textit{Giới hạn về dữ liệu:} Tập validation của DB15K trong nguồn dữ liệu công khai có các bộ ba trùng với tập huấn luyện và tập kiểm tra. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
 
 Nhóm sử dụng ba chế độ thực nghiệm:
 
@@ -637,7 +636,6 @@ distillation.
 
 \subsubsection{Kết quả và phân tích}
 
-\par\noindent\hspace{0pt}
 \begingroup
 \raggedbottom
 \setlength{\intextsep}{7pt plus 0pt minus 2pt}
@@ -779,7 +777,7 @@ các phương pháp lựa chọn teacher trên ba bộ dữ liệu
 DB15K, MKG-W và MKG-Y (Bảng~\ref{tab:dsom_table2_combined}).
 
 ConfTeacher chọn teacher có xác suất softmax cao nhất;
-BestTeacher chọn teacher có Cross-Entropy (CE)
+BestTeacher chọn teacher có cross-entropy (CE)
 thấp nhất; BestStrategy chọn tổ hợp có CE thấp nhất
 trong bảy tổ hợp. Riêng MulDE là phương pháp
 distillation sử dụng nhiều teacher, được nhóm
