@@ -704,7 +704,16 @@ WN18 & Paper & 7.00 & 95.00 & 96.20 & 97.40 \\
 
 
 
-Trên WN9, kết quả tái lập theo giao thức filtered đạt MRR 91.96\%, gần với mức 92.13\% được công bố trong bài báo. Khi đánh giá raw trên cùng checkpoint, MRR đạt 61.88\%. Tuy nhiên, nhóm chưa xác minh được giao thức raw/filtered mà tác giả sử dụng cho kết quả tương ứng. Do đó, sự gần nhau về số liệu filtered chưa đủ để khẳng định hai kết quả được đánh giá trong cùng điều kiện. Bảng VI trình bày cả hai giao thức để làm rõ giới hạn đối chiếu này.
+Trên WN9, kết quả tái lập theo giao thức filtered đạt MRR
+91.96\%, so với 92.13\% trong bài báo. Mục~5.1 của bài báo
+công bố sử dụng filtered để loại các đáp án đúng khác trước khi
+tính thứ hạng; phần trình bày WN9 không nêu ngoại lệ.
+Khi đánh giá raw trên cùng checkpoint được chọn bằng validation
+MRR theo filtered, MRR đạt 61.88\%. Nhóm dùng filtered để đối
+chiếu với giao thức được công bố và báo thêm raw nhằm minh họa
+ảnh hưởng của cách đánh giá. Sự gần nhau về số liệu chưa đủ chứng
+minh toàn bộ dữ liệu và chi tiết triển khai của hai bên tương đương.
+Bảng~\ref{tab:dsom_wn9} trình bày kết quả theo cả hai giao thức.
 
 
 \begin{table}[H]
