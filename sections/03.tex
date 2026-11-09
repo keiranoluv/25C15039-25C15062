@@ -115,7 +115,7 @@ Nhóm hiểu hai hàm loss này bổ sung cho nhau. ICL chỉ xét từng modali
 % CAE: tính trọng số danh mục và điều chỉnh điểm căn chỉnh.
 % Phân biệt huấn luyện với suy luận; phân tích các giả định.
 
-Đây chính là module mang tính novelty và là đóng góp chính của tác giả trong công trình này. Module này thể hiện rõ ý tưởng chính của paper như đã trình bày ở mục trên. Ý tưởng này cũng được thể hiện ngay trong tên paper: "CateEA: Enhancing Entity Alignment via Implicit Category Supervision". Trong paper của tác giả thì module này được trình bày trong khoảng một trang để mô tả chi tiết về nó cũng như là các công thức liên quan. Ở đây nhóm xin trình bày lại theo cách hiểu của nhóm, và có những phân tích, nhận xét riêng về nó.
+Đây là module mang tính novelty và là đóng góp chính của CateEA.
 
 Module này có hai thành phần là Category Embedding Enhancement và Category Alignment Enhancement:
 
@@ -124,7 +124,7 @@ Module này có hai thành phần là Category Embedding Enhancement và Categor
 
 Đầu tiên, mô hình đã có joint embedding của thực thể, được tạo bởi module MME và được tối ưu thông qua CRL. Nhiệm vụ của \textbf{CEE} là phân cụm những embedding này bằng K-Medoids và lấy kết quả phân cụm làm nhãn danh mục giả (pseudo-category label). Sau đó, classifier học dự đoán nhãn giả từ embedding. Loss phân loại Cross-Entropy được kết hợp với loss căn chỉnh và truyền ngược về encoder để điều chỉnh biểu diễn. Tác giả nói rằng cơ chế này tương tự ý tưởng trong công trình DeepCluster năm 2018 \cite{caron2018deepcluster}.
 
-Cụ thể hơn về tác động của clustering và classifier: Loss phân loại được lan truyền ngược qua classifier đến encoder để cập nhật các tham số tạo ra embedding. Cập nhật này nhằm mục đích khuyến khích encoder tạo ra embedding giúp classifier dự đoán đúng danh mục giả hơn. Nghĩa là thông tin phân cụm được đưa trở lại quá trình học biểu diễn thông qua classifier. Loss này không trực tiếp kéo các embedding cùng cụm lại gần nhau, mà khuyến khích encoder tạo ra các embedding có những đặc điểm giúp phân biệt các danh mục với nhau. Luồng gradient từ loss phân loại về encoder được xác nhận trong code; tuy nhiên, việc ghép nhãn giả với embedding có sai khác sẽ được phân tích ở phần đối chiếu mã nguồn. Trong paper, tác giả trình bày công thức loss phân loại và mô tả việc cộng loss này vào loss căn chỉnh.
+Loss phân loại không trực tiếp kéo các embedding cùng cụm lại gần nhau, mà khuyến khích encoder tạo ra các embedding có những đặc điểm giúp phân biệt các danh mục với nhau. Luồng gradient từ loss phân loại về encoder được xác nhận trong code; tuy nhiên, việc ghép nhãn giả với embedding có sai khác sẽ được phân tích ở phần đối chiếu mã nguồn.
 
 Việc phân cụm này không tự tạo thêm dữ liệu hay tri thức từ bên ngoài. Nó tổ chức lại những đặc điểm đã có trong không gian embedding, rồi biến cách tổ chức đó thành tín hiệu giám sát bổ sung. Ngoài ra "danh mục ngầm - implicit category" chưa chắc đã tương ứng với các danh mục thực sự ngoài thế giới thật. Phương pháp của tác giả đề xuất cơ chế này dựa trên ý tưởng khai thác thông tin danh mục ngầm ngoài thế giới thực, nhưng tác giả chưa chỉ ra các embedding trong cùng một cụm có thuộc một danh mục nào đó ngoài thực tế hay không.
 
@@ -593,6 +593,6 @@ Nhóm đã xác nhận các sai khác trên khi đọc mã nguồn, nhưng chưa
 
 Theo nhóm, điểm đáng chú ý của CateEA là biến kết quả phân cụm thành tín hiệu giám sát bổ sung cho việc học biểu diễn, đồng thời sử dụng thông tin danh mục khi xếp hạng ứng viên. Phương pháp này không cần nhãn danh mục thủ công, nhưng hiệu quả phụ thuộc vào chất lượng nhãn giả và cách khai thác chúng.
 
-Những phân tích ở phần phương pháp cũng đặt ra các vấn đề chưa được paper làm rõ: các cụm có phản ánh danh mục ngữ nghĩa ngoài thực tế hay không, lợi ích của K-Medoids so với các phương pháp phân cụm khác, và ảnh hưởng của việc sử dụng centroid trong CAE. Mặc dù tác giả chứng minh CateEA có hiệu quả tốt hơn nhờ những benchmark, ablation study nhưng tác giả chưa trả lời đầy đủ các câu hỏi đó.
+Những phân tích ở phần phương pháp cho thấy cần phân biệt chất lượng căn chỉnh với chất lượng ngữ nghĩa của các cụm. Các benchmark và ablation của tác giả hỗ trợ đánh giá hiệu quả dự đoán, nhưng chưa trả lời đầy đủ các câu hỏi về cách hình thành và sử dụng danh mục đã nêu ở trên.
 
 Ngoài ra kết quả tái lập cho thấy có xu hướng cải thiện từ SF trên DBP15K và từ iterative trên các cấu hình đã chạy. Tuy nhiên, những so sánh này chưa tách riêng đóng góp của CEE và CAE. Để kiểm chứng sâu hơn, nhóm cho rằng cần đối chiếu rõ kết quả có và không có CAE tại cùng checkpoint, thực hiện ablation cho CEE, kiểm tra và sửa lại từng sai khác mã nguồn và chạy nhiều random seed để đánh giá độ ổn định.
