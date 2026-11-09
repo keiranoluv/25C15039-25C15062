@@ -172,54 +172,47 @@ mục~\ref{sec:cateea_code_comparison}.
 
 \begin{figure}[t]
 \footnotesize
-\renewcommand{\algorithmicrequire}{\textbf{Đầu vào:}}
-\renewcommand{\algorithmicensure}{\textbf{Đầu ra:}}
-\renewcommand{\algorithmicfor}{\textbf{với}}
-\renewcommand{\algorithmicdo}{\textbf{thực hiện}}
-\renewcommand{\algorithmicend}{\textbf{kết thúc}}
-\renewcommand{\algorithmicrepeat}{\textbf{lặp}}
-\renewcommand{\algorithmicuntil}{\textbf{đến khi}}
 \begin{algorithmic}[1]
-\REQUIRE Hai đồ thị $G_1,G_2$ với tập thực thể $E_1,E_2$;
-    cặp căn chỉnh huấn luyện $\mathcal{A}$; số cụm $C$.
-\ENSURE Danh sách ứng viên đã xếp hạng cho từng truy vấn.
-\STATE Khởi tạo encoder $f_\theta$ và classifier $g_\phi$.
-\STATE \textbf{Huấn luyện: phân cụm và học nhãn giả}
+\REQUIRE Graphs $G_1,G_2$ with entity sets $E_1,E_2$;
+    training alignment pairs $\mathcal{A}$; number of clusters $C$.
+\ENSURE Ranked candidates for each query entity.
+\STATE Initialize encoder $f_\theta$ and classifier $g_\phi$.
+\STATE \textbf{Training: clustering and pseudo-label learning}
 \REPEAT
-    \STATE Tính $\hat{\mathbf{h}}_e=f_\theta(e)$ cho
+    \STATE Compute $\hat{\mathbf{h}}_e=f_\theta(e)$ for
         $e\in E_1\cup E_2$.
-    \STATE Phân cụm toàn bộ embedding bằng K-Medoids;
-        lấy chỉ số cụm làm nhãn giả $y_e$.
-    \FOR{mỗi batch cặp căn chỉnh từ $\mathcal{A}$}
-        \STATE Tính lại embedding của các thực thể trong batch.
-        \STATE Dự đoán phân phối danh mục
+    \STATE Cluster all embeddings with K-Medoids;
+        use cluster indices as pseudo-labels $y_e$.
+    \FOR{each batch of alignment pairs from $\mathcal{A}$}
+        \STATE Recompute embeddings for entities in the batch.
+        \STATE Predict category distributions
             $\mathbf{p}_e=g_\phi(\hat{\mathbf{h}}_e)$.
-        \STATE Tính $\mathcal{L}_{\mathrm{cls}}$
-            bằng cross-entropy giữa $\mathbf{p}_e$ và $y_e$.
+        \STATE Compute $\mathcal{L}_{\mathrm{cls}}$
+            as cross-entropy between $\mathbf{p}_e$ and $y_e$.
         \STATE $\mathcal{L}=\mathcal{L}_{\mathrm{align}}
             +\lambda\mathcal{L}_{\mathrm{cls}}$.
-        \STATE Lan truyền ngược để cập nhật $\theta,\phi$;
-            giữ nhãn giả cố định trong bước cập nhật này.
+        \STATE Backpropagate to update $\theta,\phi$;
+            keep pseudo-labels fixed during this update.
     \ENDFOR
-\UNTIL{thỏa điều kiện dừng huấn luyện}
-\STATE \textbf{Suy luận: phân loại và hiệu chỉnh xếp hạng}
-\STATE Tính lại embedding bằng encoder đã huấn luyện.
+\UNTIL{the training stopping criterion is met}
+\STATE \textbf{Inference: classification and ranking adjustment}
+\STATE Recompute embeddings using the trained encoder.
 \FOR{$g\in\{1,2\}$}
-    \STATE Dự đoán $c_e=\arg\max_c g_\phi(
-        \hat{\mathbf{h}}_e)_c$ với mỗi $e\in E_g$.
-    \STATE Gom nhóm $C_a^{(g)}=\{e\in E_g:c_e=a\}$;
-        tính centroid $\boldsymbol{\mu}_a^{(g)}$
-        bằng trung bình embedding của nhóm.
+    \STATE Predict $c_e=\arg\max_c g_\phi(
+        \hat{\mathbf{h}}_e)_c$ for each $e\in E_g$.
+    \STATE Form groups $C_a^{(g)}=\{e\in E_g:c_e=a\}$;
+        compute each centroid $\boldsymbol{\mu}_a^{(g)}$
+        as the mean embedding of its group.
 \ENDFOR
-\STATE Với từng cặp danh mục giữa hai đồ thị, tính
+\STATE For each cross-graph category pair, compute
     $d_{ab}=\|\boldsymbol{\mu}_a^{(1)}
-    -\boldsymbol{\mu}_b^{(2)}\|_2$ và $s_{ab}=1/(1+d_{ab})$.
-\STATE Chuẩn hóa $w_{ab}=\exp(s_{ab})/\sum_k\exp(s_{ak})$.
-\FOR{mỗi thực thể truy vấn $x\in E_1$}
-    \STATE Với mỗi ứng viên $y\in E_2$, tính
+    -\boldsymbol{\mu}_b^{(2)}\|_2$ and $s_{ab}=1/(1+d_{ab})$.
+\STATE Normalize $w_{ab}=\exp(s_{ab})/\sum_k\exp(s_{ak})$.
+\FOR{each query entity $x\in E_1$}
+    \STATE For each candidate $y\in E_2$, compute
         $S'(x,y)=w_{c_x,c_y}S(x,y)$.
-    \STATE Xếp ứng viên theo $S'(x,y)$ giảm dần;
-        thực hiện tương tự cho chiều ngược lại.
+    \STATE Rank candidates by decreasing $S'(x,y)$;
+        apply the same procedure in the reverse direction.
 \ENDFOR
 \end{algorithmic}
 \caption{Luồng khai thác danh mục ngầm do nhóm diễn giải lại
