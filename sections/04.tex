@@ -639,7 +639,7 @@ lấy từ checkpoint được chọn theo validation MRR.
 \noindent\textit{Khả năng tái lập kết quả tổng thể:}
 Nhóm tái lập kết quả của student và so sánh với paper trên
 sáu bộ dữ liệu. Các kết quả được so sánh với Tables 1, 3 và 7 trong paper,
-với baseline tái lập sử dụng \texttt{source\_frozen} RC, nghĩa là sử dụng lại mã nguồn của tác giả mà không chỉnh sửa những sai khác so với các phương pháp được nêu trong paper.
+với baseline tái lập sử dụng \texttt{source\_frozen} RC, tức giữ cách tối ưu chỉ cập nhật student mà không cập nhật policy như mã nguồn công khai. Tên cấu hình này chỉ mô tả cách cập nhật policy; các bước bổ sung xử lý dữ liệu và tái tạo đặc trưng vẫn được áp dụng như đã trình bày trong phần thiết lập thực nghiệm.
 
 Trên DB15K, MRR tái lập thấp hơn paper 1.38 \%;
 MKG-W chỉ lệch -0.32 \%, còn MKG-Y cao hơn
