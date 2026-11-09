@@ -84,23 +84,28 @@ Module CRL gồm hai hàm loss:
         \mathcal{L}^{ICL}_m = -\mathbb{E}_{i \in B}\log
         \tfrac{1}{2}\left[q_m(e^1_i, e^2_i) + q_m(e^2_i, e^1_i)\right].
     \]
-  \item \textbf{IAL (Inter-modal Alignment Learning): }Tính phân phối $q'_o$ từ joint embedding và $q'_m$ từ modality $m$ (sử dụng cùng công thức trên với nhiệt độ $\tau_2$). Sau đó, sử dụng KL divergence để đưa phân phối của modality $m$ tiệm cận với phân phối của joint embedding theo cả hai chiều:
+  \item \textbf{IAL (Inter-modal Alignment Learning): }Tính các vector phân phối xác suất $\mathbf{q}'_o$ từ joint embedding và $\mathbf{q}'_m$ từ modality $m$ trên cùng tập ứng viên, sử dụng nhiệt độ $\tau_2$. Sau đó, sử dụng KL divergence để đưa phân phối của modality $m$ tiệm cận với phân phối của joint embedding theo cả hai chiều:
 
     \begin{equation}
         \begin{aligned}
         \mathcal{L}^{IAL}_m
         = \frac{1}{2}\mathbb{E}_{i \in B}\Big[
         &\operatorname{KL}\big(
-        q'_o(e^1_i,e^2_i)
-        \,\|\, q'_m(e^1_i,e^2_i)
+        \mathbf{q}'_o(e^1_i,\cdot)
+        \,\|\, \mathbf{q}'_m(e^1_i,\cdot)
         \big)\\
         +&\operatorname{KL}\big(
-        q'_o(e^2_i,e^1_i)
-        \,\|\, q'_m(e^2_i,e^1_i)
+        \mathbf{q}'_o(e^2_i,\cdot)
+        \,\|\, \mathbf{q}'_m(e^2_i,\cdot)
         \big)
         \Big].
         \end{aligned}
     \end{equation}
+    Ở đây $\mathbf{q}'_m(u,\cdot)$ là vector xác suất của các
+    ứng viên khi truy vấn là $u$; mỗi phần tử tương ứng với một
+    ứng viên. KL được tính trên toàn bộ hai vector phân phối,
+    không chỉ trên xác suất của riêng cặp thực thể tương ứng.
+
 \end{itemize}
 
 Nhóm hiểu hai hàm loss này bổ sung cho nhau. ICL chỉ xét từng modality riêng lẻ nên các modality có thể học theo những hướng khác nhau, còn IAL buộc từng modality phải nhất quán với joint embedding. Nhờ vậy một modality yếu hoặc nhiễu (chẳng hạn ảnh không rõ) vẫn nhận được tín hiệu từ các modality mạnh hơn.
