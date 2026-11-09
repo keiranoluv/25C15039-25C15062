@@ -1,0 +1,39 @@
+\begin{table*}[!t]
+\centering
+\caption{So sánh Hits@1, Hits@10 và MRR (\%) trên MMKB; đối chiếu Tables 3--4 của bài báo.}
+\label{tab:cateea_mmkb}
+\small
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{@{}lllrrr@{\hspace{14pt}}rrr@{}}
+\toprule
+\textbf{Chế độ} & \textbf{Tỷ lệ} & \textbf{Kết quả} & \multicolumn{3}{c}{\textbf{FB15K-DB15K}} & \multicolumn{3}{c}{\textbf{FB15K-YAGO15K}} \\
+\cmidrule(lr){4-6}\cmidrule(lr){7-9}
+ &  &  & \textbf{H@1$\uparrow$} & \textbf{H@10$\uparrow$} & \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@10$\uparrow$} & \textbf{MRR$\uparrow$} \\
+\midrule
+Non-iter & 20\% & Paper & 49.30 & 75.90 & 58.40 & 40.20 & 67.50 & 49.70 \\
+ &  & Tái lập & \cateearun{dccl235x}{48.88} & \cateearun{dccl235x}{75.65} & \cateearun{dccl235x}{58.18} & \cateearun{u7l7rzah}{38.84} & \cateearun{u7l7rzah}{66.26} & \cateearun{u7l7rzah}{48.22} \\
+ &  & $\Delta$ & \deltaneg{-0.42} & \deltaneg{-0.25} & \deltaneg{-0.22} & \deltaneg{-1.36} & \deltaneg{-1.24} & \deltaneg{-1.48} \\
+\addlinespace[3pt]
+Non-iter & 50\% & Paper & 67.40 & 87.40 & 74.50 & 60.80 & 82.90 & 68.60 \\
+ &  & Tái lập & \cateearun{vckjpp3o}{66.01} & \cateearun{vckjpp3o}{86.16} & \cateearun{vckjpp3o}{73.20} & \cateearun{9060trns}{60.19} & \cateearun{9060trns}{81.83} & \cateearun{9060trns}{67.84} \\
+ &  & $\Delta$ & \deltaneg{-1.39} & \deltaneg{-1.24} & \deltaneg{-1.30} & \deltaneg{-0.61} & \deltaneg{-1.07} & \deltaneg{-0.76} \\
+\addlinespace[3pt]
+Non-iter & 80\% & Paper & 79.90 & 93.30 & 84.90 & 74.20 & 91.20 & 80.50 \\
+ &  & Tái lập & \cateearun{92xpyrkt}{77.16} & \cateearun{92xpyrkt}{91.61} & \cateearun{92xpyrkt}{82.52} & \cateearun{iovu8zta}{74.22} & \cateearun{iovu8zta}{90.82} & \cateearun{iovu8zta}{80.36} \\
+ &  & $\Delta$ & \deltaneg{-2.74} & \deltaneg{-1.69} & \deltaneg{-2.38} & \deltapos{+0.02} & \deltaneg{-0.38} & \deltaneg{-0.14} \\
+\addlinespace[3pt]
+Iter & 20\% & Paper & 59.90 & 82.20 & 67.50 & 51.80 & 74.50 & 59.40 \\
+ &  & Tái lập & \cateearun{gustc0d9}{62.31} & \cateearun{gustc0d9}{82.45} & \cateearun{gustc0d9}{69.39} & \cateearun{ownvumgr}{52.17} & \cateearun{ownvumgr}{73.46} & \cateearun{ownvumgr}{59.58} \\
+ &  & $\Delta$ & \deltapos{+2.41} & \deltapos{+0.25} & \deltapos{+1.89} & \deltapos{+0.37} & \deltaneg{-1.04} & \deltapos{+0.18} \\
+\addlinespace[3pt]
+Iter & 50\% & Paper & 70.50 & 88.20 & 76.40 & 64.00 & 84.40 & 70.80 \\
+ &  & Tái lập & \cateearun{mdwrjgz5}{70.55} & \cateearun{mdwrjgz5}{86.93} & \cateearun{mdwrjgz5}{76.35} & \cateearun{wywowfuy}{64.43} & \cateearun{wywowfuy}{82.53} & \cateearun{wywowfuy}{70.81} \\
+ &  & $\Delta$ & \deltapos{+0.05} & \deltaneg{-1.27} & \deltaneg{-0.05} & \deltapos{+0.43} & \deltaneg{-1.87} & \deltapos{+0.01} \\
+\addlinespace[3pt]
+Iter & 80\% & Paper & 80.60 & 93.40 & 85.30 & 74.60 & 91.50 & 80.70 \\
+ &  & Tái lập & \cateearun{t0eainhm}{80.18} & \cateearun{t0eainhm}{92.55} & \cateearun{t0eainhm}{84.65} & \cateearun{oxqvbkz1}{74.71} & \cateearun{oxqvbkz1}{89.33} & \cateearun{oxqvbkz1}{79.98} \\
+ &  & $\Delta$ & \deltaneg{-0.42} & \deltaneg{-0.85} & \deltaneg{-0.65} & \deltapos{+0.11} & \deltaneg{-2.17} & \deltaneg{-0.72} \\
+\bottomrule
+\end{tabular}
+\end{table*}

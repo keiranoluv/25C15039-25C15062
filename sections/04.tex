@@ -452,7 +452,12 @@ tri thức từ teacher sang student. Hệ số
 $\gamma$ điều chỉnh mức đóng góp của NDKD.
 
 Dù được viết chung trong hàm mục tiêu, các thành phần
-này đảm nhận những nhiệm vụ khác nhau.
+này đảm nhận những nhiệm vụ khác nhau. Trong Hình~\ref{alg:dsom},
+$\mathcal{L}_{\mathrm{upd}}=\mathcal{L}^{stu}_{CE}
++\gamma\mathcal{L}_{NDKD}$ là phần dùng để cập nhật student;
+hàm mục tiêu tổng thể là
+$\mathcal{L}_{stu}=\mathcal{L}_{\mathrm{upd}}+\mathcal{L}_{RC}$.
+
 Loss của agent dùng để học chính sách lựa
 chọn teacher, còn Cross-Entropy và NDKD
 được sử dụng để huấn luyện student.
@@ -461,6 +466,10 @@ Cuối cùng, ở giai đoạn inference, tác giả
 chỉ sử dụng student. Các teacher và agent
 không còn tham gia vào việc dự đoán thực
 thể còn thiếu.
+
+Hình~\ref{alg:dsom} tóm tắt ba giai đoạn huấn luyện teacher,
+huấn luyện student cùng policy và suy luận bằng student.
+\input{sections/dsom_pseudocode}
 
 Như vậy, theo cách hiểu của nhóm, DSoM
 có thể được nhìn nhận qua hai câu hỏi:
@@ -473,13 +482,12 @@ câu hỏi thứ nhất thông qua học tăng cường,
 còn NDKD giải quyết câu hỏi thứ hai thông
 qua việc phân tách phân phối dự đoán.
 
+\begin{samepage}
 Đây cũng là hai thành phần mà nhóm cho
 rằng thể hiện rõ nhất ý tưởng của tác giả
 trong công trình DSoM.
+\end{samepage}
 
-Hình~\ref{alg:dsom} tóm tắt ba giai đoạn huấn luyện teacher,
-huấn luyện student cùng policy và suy luận bằng student.
-\input{sections/dsom_pseudocode}
 
 \subsection{Tái lập thực nghiệm}
 
@@ -778,7 +786,7 @@ distillation sử dụng nhiều teacher, được nhóm
 điều chỉnh để phù hợp với framework DSoM
 do thiếu thông tin tương ứng trong mã nguồn và paper.
 
-\begin{table*}[!t]
+\begin{table*}[!p]
 \centering
 \caption{So sánh các phương pháp teacher selection trên DB15K, MKG-W và MKG-Y (Table 2 trong paper).}
 \label{tab:dsom_table2_combined}

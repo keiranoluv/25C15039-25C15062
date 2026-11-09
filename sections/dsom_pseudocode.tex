@@ -1,4 +1,4 @@
-\begin{figure}[t]
+\begin{figure}[!b]
 \footnotesize
 \begin{algorithmic}[1]
 \REQUIRE Training triples $\mathcal{T}_{\mathrm{train}}$;
@@ -43,14 +43,14 @@
             \STATE $\delta_i=\operatorname{stopgrad}
                 (R_i-\widehat{R}_i)$.
         \ENDFOR
-        \STATE $\mathcal{L}_{\mathrm{stu}}
+        \STATE $\mathcal{L}_{\mathrm{upd}}
             =\frac{1}{|\mathcal{B}|}\sum_{i\in\mathcal{B}}
             [\mathrm{CE}(F_i^{\mathrm{stu}},t_i)
             +\gamma\mathcal{L}_{\mathrm{NDKD},i}]$.
         \STATE $\mathcal{L}_{\mathrm{RC}}
             =-\frac{1}{|\mathcal{B}|}\sum_{i\in\mathcal{B}}
             \delta_i\log\pi_\theta(a_i\mid s_i)$.
-        \STATE Update $\psi$ using $\mathcal{L}_{\mathrm{stu}}$
+        \STATE Update $\psi$ using $\mathcal{L}_{\mathrm{upd}}$
             and $\theta$ using $\mathcal{L}_{\mathrm{RC}}$;
             keep teacher parameters fixed.
     \ENDFOR

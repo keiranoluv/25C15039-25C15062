@@ -26,7 +26,7 @@ CateEA gồm ba modules chính (Hình~\ref{fig:cateea_pipeline}):
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/pipeline.png}
-\caption{Kiến trúc tổng quan của CateEA. Các modality được mã hóa rồi kết hợp thành một joint embedding duy nhất. Joint embedding này được tinh chỉnh qua module \textbf{CRL} để các thực thể tương ứng nằm gần nhau hơn. Song song đó, các embedding được phân cụm để tạo pseudo-category, và thông tin danh mục này được dùng để hỗ trợ huấn luyện và điều chỉnh độ tương đồng giữa các cặp thực thể. Nguồn: \cite{feng-etal-2025-cateea}, Fig. 2.}
+\caption{Kiến trúc tổng quan của CateEA. Các modality được mã hóa rồi kết hợp thành một joint embedding duy nhất. Joint embedding này được tinh chỉnh qua module \textbf{CRL} để các thực thể tương ứng nằm gần nhau hơn. Song song đó, các embedding được phân cụm để tạo pseudo-category, và thông tin danh mục này được dùng để hỗ trợ huấn luyện và điều chỉnh độ tương đồng giữa các cặp thực thể. Nguồn: \cite{feng-etal-2025-cateea}, Fig. 2. Lưu ý: hình gốc chưa đánh dấu GAT là trainable; trong mã nguồn, các tham số GAT vẫn được cập nhật khi huấn luyện.}
 \label{fig:cateea_pipeline}
 \end{figure*}
 
@@ -230,6 +230,10 @@ mục~\ref{sec:cateea_code_comparison}.
 \end{figure}
 \subsection{Tái lập thực nghiệm}
 
+% Declare wide result tables early to keep them within the CateEA section.
+\input{sections/cateea_dbp15k_table}
+\input{sections/cateea_mmkb_table}
+
 \subsubsection{Thiết lập thực nghiệm}
 
 Nhóm sử dụng mã nguồn công khai của tác giả và bổ sung các script chạy, ghi nhận kết quả bằng Weights \& Biases (W\&B), cùng chức năng lưu checkpoint. Mã nguồn và hướng dẫn chạy lại được cung cấp tại \href{https://github.com/keiranoluv/Reproduce_CateEA}{Github}.
@@ -257,122 +261,16 @@ Các lần chạy được theo dõi tại \href{https://forge.coreweave.com/wan
 \subsubsection{Kết quả và phân tích}
 
 Bảng~\ref{tab:cateea_dbp15k} và Bảng~\ref{tab:cateea_mmkb}
-so sánh Hits@1 (\%) giữa bài báo và kết quả tái lập.
+so sánh Hits@1, Hits@10 và MRR (\%) giữa bài báo và kết quả tái lập.
 $\Delta$ là chênh lệch giữa kết quả tái lập và bài báo,
 tính theo \%. Bấm vào số liệu tái lập sẽ dẫn
 đến run W\&B tương ứng.
 
-% \begin{table}[htp]
-% \centering
-% \caption{So sánh Hits@1 (\%) trên DBP15K.}
-% \label{tab:cateea_dbp15k}
-% \scriptsize
-% \setlength{\tabcolsep}{4pt}
-% \renewcommand{\arraystretch}{1.12}
-% \begin{tabular}{@{}llrrr@{}}
-% \toprule
-% \textbf{Cấu hình} & \textbf{Kết quả}
-% & \textbf{ZH-EN} & \textbf{JA-EN} & \textbf{FR-EN} \\
-% \midrule
-
-% Non-iter & Paper & 77.60 & 77.20 & 78.60 \\
-% w/o SF & Tái lập
-% & \cateearun{smwb7h2s}{73.75}
-% & \cateearun{1i8acfog}{76.02}
-% & \cateearun{cs880n51}{78.14} \\
-% & $\Delta$
-% & \deltaneg{-3.85} & \deltaneg{-1.18} & \deltaneg{-0.46} \\
-
-% \addlinespace
-% Non-iter & Paper & 94.50 & 97.20 & 99.10 \\
-% w/ SF & Tái lập
-% & \cateearun{ouxqphvg}{94.20}
-% & \cateearun{i448247f}{97.13}
-% & \cateearun{h9llx682}{99.01} \\
-% & $\Delta$
-% & \deltaneg{-0.30} & \deltaneg{-0.07} & \deltaneg{-0.09} \\
-
-% \addlinespace
-% Iter & Paper & 83.90 & 85.10 & 86.20 \\
-% w/o SF & Tái lập
-% & \cateearun{yhxmaaiy}{79.58}
-% & \cateearun{anh3017u}{82.68}
-% & \cateearun{yfsixay2}{84.77} \\
-% & $\Delta$
-% & \deltaneg{-4.32} & \deltaneg{-2.42} & \deltaneg{-1.43} \\
-
-% \addlinespace
-% Iter & Paper & 97.40 & 99.20 & 99.70 \\
-% w/ SF & Tái lập
-% & \cateearun{vzdpd3hi}{97.24}
-% & \cateearun{0sp0eyep}{98.84}
-% & \cateearun{xvueasz7}{99.64} \\
-% & $\Delta$
-% & \deltaneg{-0.16} & \deltaneg{-0.36} & \deltaneg{-0.06} \\
-
-% \bottomrule
-% \end{tabular}
-% \end{table}
 
 
-\begin{table}[htp]
-\centering
-\caption{So sánh Hits@1 (\%) trên DBP15K.}
-\label{tab:cateea_dbp15k}
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabular}{@{}llrrr@{}}
-\toprule
-\textbf{Cấu hình} & \textbf{Kết quả}
-& \textbf{ZH-EN} & \textbf{JA-EN} & \textbf{FR-EN} \\
-\midrule
-
-Non-iter & Paper & 77.60 & 77.20 & 78.60 \\
-\rowcolor{resultgray}
-\cellcolor{white}w/o SF & Tái lập
-& \cateearun{smwb7h2s}{73.75}
-& \cateearun{1i8acfog}{76.02}
-& \cateearun{cs880n51}{78.14} \\
-& $\Delta$
-& \deltaneg{-3.85} & \deltaneg{-1.18} & \deltaneg{-0.46} \\
-
-\addlinespace
-Non-iter & Paper & 94.50 & 97.20 & 99.10 \\
-\rowcolor{resultgray}
-\cellcolor{white}w/ SF & Tái lập
-& \cateearun{ouxqphvg}{94.20}
-& \cateearun{i448247f}{97.13}
-& \cateearun{h9llx682}{99.01} \\
-& $\Delta$
-& \deltaneg{-0.30} & \deltaneg{-0.07} & \deltaneg{-0.09} \\
-
-\addlinespace
-Iter & Paper & 83.90 & 85.10 & 86.20 \\
-\rowcolor{resultgray}
-\cellcolor{white}w/o SF & Tái lập
-& \cateearun{yhxmaaiy}{79.58}
-& \cateearun{anh3017u}{82.68}
-& \cateearun{yfsixay2}{84.77} \\
-& $\Delta$
-& \deltaneg{-4.32} & \deltaneg{-2.42} & \deltaneg{-1.43} \\
-
-\addlinespace
-Iter & Paper & 97.40 & 99.20 & 99.70 \\
-\rowcolor{resultgray}
-\cellcolor{white}w/ SF & Tái lập
-& \cateearun{vzdpd3hi}{97.24}
-& \cateearun{0sp0eyep}{98.84}
-& \cateearun{xvueasz7}{99.64} \\
-& $\Delta$
-& \deltaneg{-0.16} & \deltaneg{-0.36} & \deltaneg{-0.06} \\
-
-\bottomrule
-\end{tabular}
-\end{table}
 
 
-Trên DBP15K (Bảng~\ref{tab:cateea_dbp15k}), kết quả tái lập
+Trên DBP15K (Bảng~\ref{tab:cateea_dbp15k}), Hits@1 tái lập
 thấp hơn bài báo ở toàn bộ cấu hình. Khi sử dụng SF,
 chênh lệch nhỏ hơn 0.4\%. Khi không sử dụng SF,
 chênh lệch rõ hơn, lớn nhất là 4.32\% ở
@@ -382,135 +280,19 @@ non-iterative ở các thiết lập tương ứng. Tuy nhiên, các
 kết quả này chưa đủ xác định nguyên nhân của chênh lệch
 với bài báo.
 
-% \begin{table}[htp]
-% \centering
-% \caption{So sánh Hits@1 (\%) trên MMKB.}
-% \label{tab:cateea_mmkb}
-% \scriptsize
-% \setlength{\tabcolsep}{3pt}
-% \renewcommand{\arraystretch}{1.12}
-% \begin{tabular}{@{}lllrr@{}}
-% \toprule
-% \textbf{Chế độ} & \textbf{Tỷ lệ} & \textbf{Kết quả}
-% & \textbf{FB15K-DB15K} & \textbf{FB15K-YAGO15K} \\
-% \midrule
-
-% Non-iter & 20\% & Paper & 49.30 & 40.20 \\
-% & & Tái lập
-% & \cateearun{dccl235x}{48.88}
-% & \cateearun{u7l7rzah}{38.84} \\
-% & & $\Delta$ & \deltaneg{-0.42} & \deltaneg{-1.36} \\
-
-% \addlinespace
-% Non-iter & 50\% & Paper & 67.40 & 60.80 \\
-% & & Tái lập
-% & \cateearun{vckjpp3o}{66.01}
-% & \cateearun{9060trns}{60.19} \\
-% & & $\Delta$ & \deltaneg{-1.39} & \deltaneg{-0.61} \\
-
-% \addlinespace
-% Non-iter & 80\% & Paper & 79.90 & 74.20 \\
-% & & Tái lập
-% & \cateearun{92xpyrkt}{77.16}
-% & \cateearun{iovu8zta}{74.22} \\
-% & & $\Delta$ & \deltaneg{-2.74} & \deltapos{+0.02} \\
-
-% \addlinespace
-% Iter & 20\% & Paper & 59.90 & 51.80 \\
-% & & Tái lập
-% & \cateearun{gustc0d9}{62.31}
-% & \cateearun{ownvumgr}{52.17} \\
-% & & $\Delta$ & \deltapos{+2.41} & \deltapos{+0.37} \\
-
-% \addlinespace
-% Iter & 50\% & Paper & 70.50 & 64.00 \\
-% & & Tái lập
-% & \cateearun{mdwrjgz5}{70.55}
-% & \cateearun{wywowfuy}{64.43} \\
-% & & $\Delta$ & \deltapos{+0.05} & \deltapos{+0.43} \\
-
-% \addlinespace
-% Iter & 80\% & Paper & 80.60 & 74.60 \\
-% & & Tái lập
-% & \cateearun{t0eainhm}{80.18}
-% & \cateearun{oxqvbkz1}{74.71} \\
-% & & $\Delta$ & \deltaneg{-0.42} & \deltapos{+0.11} \\
-
-% \bottomrule
-% \end{tabular}
-% \end{table}
 
 
-\begin{table}[htp]
-\centering
-\caption{So sánh Hits@1 (\%) trên MMKB.}
-\label{tab:cateea_mmkb}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabular}{@{}lllrr@{}}
-\toprule
-\textbf{Chế độ} & \textbf{Tỷ lệ} & \textbf{Kết quả}
-& \textbf{FB15K-DB15K} & \textbf{FB15K-YAGO15K} \\
-\midrule
-
-Non-iter & 20\% & Paper & 49.30 & 40.20 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{dccl235x}{48.88}
-& \cateearun{u7l7rzah}{38.84} \\
-& & $\Delta$ & \deltaneg{-0.42} & \deltaneg{-1.36} \\
-
-\addlinespace
-Non-iter & 50\% & Paper & 67.40 & 60.80 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{vckjpp3o}{66.01}
-& \cateearun{9060trns}{60.19} \\
-& & $\Delta$ & \deltaneg{-1.39} & \deltaneg{-0.61} \\
-
-\addlinespace
-Non-iter & 80\% & Paper & 79.90 & 74.20 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{92xpyrkt}{77.16}
-& \cateearun{iovu8zta}{74.22} \\
-& & $\Delta$ & \deltaneg{-2.74} & \deltapos{+0.02} \\
-
-\addlinespace
-Iter & 20\% & Paper & 59.90 & 51.80 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{gustc0d9}{62.31}
-& \cateearun{ownvumgr}{52.17} \\
-& & $\Delta$ & \deltapos{+2.41} & \deltapos{+0.37} \\
-
-\addlinespace
-Iter & 50\% & Paper & 70.50 & 64.00 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{mdwrjgz5}{70.55}
-& \cateearun{wywowfuy}{64.43} \\
-& & $\Delta$ & \deltapos{+0.05} & \deltapos{+0.43} \\
-
-\addlinespace
-Iter & 80\% & Paper & 80.60 & 74.60 \\
-\rowcolor{resultgray}
-\cellcolor{white} & \cellcolor{white} & Tái lập
-& \cateearun{t0eainhm}{80.18}
-& \cateearun{oxqvbkz1}{74.71} \\
-& & $\Delta$ & \deltaneg{-0.42} & \deltapos{+0.11} \\
-
-\bottomrule
-\end{tabular}
-\end{table}
 
 
-Trên MMKB (Bảng~\ref{tab:cateea_mmkb}), kết quả tái lập
+Trên MMKB (Bảng~\ref{tab:cateea_mmkb}), Hits@1 tái lập
 non-iterative thấp hơn bài báo ở phần lớn cấu hình.
 Với iterative, năm trong sáu cấu hình đạt kết quả cao hơn
 bài báo trong lần chạy này, đáng chú ý nhất là
 FB15K-DB15K với tỷ lệ 20\%, cao hơn 2.41\%.
+
+Ở các cấu hình MMKB iterative, Hits@10 chỉ cao hơn bài báo
+trong một cấu hình, còn MRR cao hơn trong ba cấu hình.
+Xu hướng chênh lệch với bài báo không đồng nhất giữa các metric.
 
 Trong các kết quả tái lập, iterative đều cải thiện so với
 non-iterative ở cùng bộ dữ liệu và tỷ lệ huấn luyện.

@@ -1,0 +1,31 @@
+\begin{table*}[!t]
+\centering
+\caption{So sánh Hits@1, Hits@10 và MRR (\%) trên DBP15K; đối chiếu Tables 1--2 của bài báo.}
+\label{tab:cateea_dbp15k}
+\small
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrr@{\hspace{10pt}}rrr@{\hspace{10pt}}rrr@{}}
+\toprule
+\textbf{Cấu hình} & \textbf{Kết quả} & \multicolumn{3}{c}{\textbf{ZH-EN}} & \multicolumn{3}{c}{\textbf{JA-EN}} & \multicolumn{3}{c}{\textbf{FR-EN}} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}
+ &  & \textbf{H@1$\uparrow$} & \textbf{H@10$\uparrow$} & \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@10$\uparrow$} & \textbf{MRR$\uparrow$} & \textbf{H@1$\uparrow$} & \textbf{H@10$\uparrow$} & \textbf{MRR$\uparrow$} \\
+\midrule
+Non-iter w/o SF & Paper & 77.60 & 95.50 & 83.90 & 77.20 & 96.30 & 84.00 & 78.60 & 97.20 & 85.50 \\
+ & Tái lập & \cateearun{smwb7h2s}{73.75} & \cateearun{smwb7h2s}{94.82} & \cateearun{smwb7h2s}{81.27} & \cateearun{1i8acfog}{76.02} & \cateearun{1i8acfog}{96.19} & \cateearun{1i8acfog}{83.34} & \cateearun{cs880n51}{78.14} & \cateearun{cs880n51}{97.25} & \cateearun{cs880n51}{85.22} \\
+ & $\Delta$ & \deltaneg{-3.85} & \deltaneg{-0.68} & \deltaneg{-2.63} & \deltaneg{-1.18} & \deltaneg{-0.11} & \deltaneg{-0.66} & \deltaneg{-0.46} & \deltapos{+0.05} & \deltaneg{-0.28} \\
+\addlinespace[3pt]
+Non-iter w/ SF & Paper & 94.50 & 99.30 & 96.40 & 97.20 & 99.80 & 98.70 & 99.10 & 100.00 & 99.50 \\
+ & Tái lập & \cateearun{ouxqphvg}{94.20} & \cateearun{ouxqphvg}{99.27} & \cateearun{ouxqphvg}{96.13} & \cateearun{i448247f}{97.13} & \cateearun{i448247f}{99.85} & \cateearun{i448247f}{98.25} & \cateearun{h9llx682}{99.01} & \cateearun{h9llx682}{99.98} & \cateearun{h9llx682}{99.43} \\
+ & $\Delta$ & \deltaneg{-0.30} & \deltaneg{-0.03} & \deltaneg{-0.27} & \deltaneg{-0.07} & \deltapos{+0.05} & \deltaneg{-0.45} & \deltaneg{-0.09} & \deltaneg{-0.02} & \deltaneg{-0.07} \\
+\addlinespace[3pt]
+Iter w/o SF & Paper & 83.90 & 97.10 & 88.70 & 85.10 & 97.80 & 89.90 & 86.20 & 98.50 & 90.80 \\
+ & Tái lập & \cateearun{yhxmaaiy}{79.58} & \cateearun{yhxmaaiy}{95.69} & \cateearun{yhxmaaiy}{85.48} & \cateearun{anh3017u}{82.68} & \cateearun{anh3017u}{97.07} & \cateearun{anh3017u}{88.11} & \cateearun{yfsixay2}{84.77} & \cateearun{yfsixay2}{98.00} & \cateearun{yfsixay2}{89.78} \\
+ & $\Delta$ & \deltaneg{-4.32} & \deltaneg{-1.41} & \deltaneg{-3.22} & \deltaneg{-2.42} & \deltaneg{-0.73} & \deltaneg{-1.79} & \deltaneg{-1.43} & \deltaneg{-0.50} & \deltaneg{-1.02} \\
+\addlinespace[3pt]
+Iter w/ SF & Paper & 97.40 & 99.80 & 98.40 & 99.20 & 99.90 & 99.30 & 99.70 & 100.00 & 99.80 \\
+ & Tái lập & \cateearun{vzdpd3hi}{97.24} & \cateearun{vzdpd3hi}{99.71} & \cateearun{vzdpd3hi}{98.22} & \cateearun{0sp0eyep}{98.84} & \cateearun{0sp0eyep}{99.97} & \cateearun{0sp0eyep}{99.31} & \cateearun{xvueasz7}{99.64} & \cateearun{xvueasz7}{100.00} & \cateearun{xvueasz7}{99.81} \\
+ & $\Delta$ & \deltaneg{-0.16} & \deltaneg{-0.09} & \deltaneg{-0.18} & \deltaneg{-0.36} & \deltapos{+0.07} & \deltapos{+0.01} & \deltaneg{-0.06} & 0.00 & \deltapos{+0.01} \\
+\bottomrule
+\end{tabular}
+\end{table*}
