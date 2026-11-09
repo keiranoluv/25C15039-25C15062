@@ -13,7 +13,7 @@ Từ quan sát trên thì paper DSoM tiếp cận bài toán theo hướng chắ
 
 Ngoài việc lựa chọn giáo viên, DSoM còn phân biệt tri thức liên quan đến các thực thể là đáp án đúng đã biết (neighbors) và các thực thể chưa được ghi nhận là đáp án đúng (non-neighbors).
 
-Tác giả đề xuất Neighbor-Decoupled Knowledge Distillation (NDKD) nhằm phân tách quá trình truyền tri thức từ teacher sang student theo hai nhóm thực thể này.
+Tác giả đề xuất \textit{Neighbor-Decoupled Knowledge Distillation (NDKD)} nhằm phân tách quá trình truyền tri thức từ teacher sang student theo hai nhóm thực thể này.
 
 Khái niệm neighbors và non-neighbors được định nghĩa cụ thể trong phần NDKD.
 
@@ -99,7 +99,7 @@ Theo nhóm thì cách thiết kế này có lợi ích giảm sự phụ thuộc
 \subsubsection{Lựa chọn tổ hợp giáo viên bằng học tăng cường}
 
 Sau khi huấn luyện ba teacher, tác giả đề xuất
-cơ chế Reinforced Combination (RC), sử dụng
+cơ chế \textit{Reinforced Combination (RC)}, sử dụng
 học tăng cường (Reinforcement Learning - RL)
 để lựa chọn và kết hợp các teacher phù hợp
 với từng truy vấn.
@@ -332,10 +332,10 @@ Hai phân phối này được so sánh bằng KL divergence:
 NEKD giúp student điều chỉnh xác suất dành cho nhóm neighbors sao cho gần với teacher hơn.
 
 Công thức~\eqref{eq:nekd_mean} và ví dụ trên trình bày
-cách lấy trung bình xác suất của các thực thể thuộc nhóm
+cách lấy \textbf{trung bình} xác suất của các thực thể thuộc nhóm
 neighbors theo bài báo gốc. Tuy nhiên, theo tài liệu giao thức
 thực nghiệm của repository, mã nguồn được sử dụng trong
-các lần tái lập tính xác suất nhóm neighbors bằng phép tổng:
+các lần tái lập tính xác suất nhóm neighbors bằng phép \textbf{tổng}:
 
 \begin{equation}
     p_N^{\mathrm{impl}} = \sum_{e \in N} p_e,
@@ -540,27 +540,27 @@ nhóm báo thêm raw trên cùng checkpoint để đối chiếu. Các bộ lọ
 được xây dựng từ các bộ ba huấn luyện và các bộ ba nghịch đảo
 tương ứng.
 
-\noindent\textit{Giới hạn về dữ liệu:} Tập validation của DB15K trong nguồn dữ liệu công khai có các bộ ba trùng với tập huấn luyện và tập kiểm tra. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
+\noindent\textit{Giới hạn về dữ liệu:} Tập validation của DB15K trong nguồn dữ liệu công khai có \textbf{các bộ ba trùng với tập huấn luyện và tập kiểm tra}. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
 
 Nhóm sử dụng ba chế độ thực nghiệm:
 
 \begin{itemize}
     % \item \texttt{source\_frozen}: Giữ nguyên mã nguồn công khai tác giả công bố. Vấn đề trong mã nguồn này là agent có lựa chọn tổ hợp teacher nhưng policy không được cập nhật do thiếu tham số trong optimizer - đây là điểm không khớp giữa paper và mã nguồn.
-    \item \texttt{source\_frozen}: giữ cách cập nhật tham số của mã nguồn
+    \item \textit{\texttt{source\_frozen}:} giữ cách cập nhật tham số của mã nguồn
         công khai DSoM tại commit \texttt{171e59c}. Policy vẫn nhận
         logits của teacher và lấy mẫu tổ hợp bằng
         \texttt{torch.multinomial}.
         \footnote{\href{https://github.com/OreOZhao/DSoM/blob/171e59cb069d50abf039fa824b079e23b8956696/src/kd.py\#L337-L354}{DSoM: tính phân phối policy và lấy mẫu tổ hợp.}}
         Tuy nhiên, \texttt{get\_learnable\_parameters} chỉ trả về tham
         số student, còn optimizer được khởi tạo từ danh sách này,
-        nên tham số mạng policy không được cập nhật.
+        nên \textbf{tham số mạng policy không được cập nhật}.
         \footnote{\href{https://github.com/OreOZhao/DSoM/blob/171e59cb069d50abf039fa824b079e23b8956696/src/kd.py\#L22-L24}{DSoM: danh sách tham số được tối ưu};
         \href{https://github.com/OreOZhao/DSoM/blob/171e59cb069d50abf039fa824b079e23b8956696/src/kd_learn.py\#L246-L255}{khởi tạo optimizer}.}
         Do đó, ``frozen'' chỉ việc giữ nguyên tham số policy, không
         đồng nghĩa luôn chọn một tổ hợp teacher cố định. Các kết quả
         này chưa chứng minh hiệu quả của việc học policy bằng RL.
-    \item \texttt{learned\_RC}: Bổ sung optimizer riêng để huấn luyện policy theo cơ chế RL giống mô tả của paper;
-    \item \texttt{fixed\_teacher}: Sử dụng một teacher hoặc tổ hợp cố định, không qua agent. Sự phân biệt này giúp đánh giá riêng khả năng tái lập mã nguồn và hiệu quả của cơ chế RL được đề xuất trong paper.
+    \item \textit{\texttt{learned\_RC}:} Bổ sung optimizer riêng để huấn luyện policy theo cơ chế RL giống mô tả của paper;
+    \item \textit{\texttt{fixed\_teacher}:} Sử dụng một teacher hoặc tổ hợp cố định, không qua agent. Sự phân biệt này giúp đánh giá riêng khả năng tái lập mã nguồn và hiệu quả của cơ chế RL được đề xuất trong paper.
 \end{itemize}
 
 Để đánh giá khả năng tái lập và kiểm chứng

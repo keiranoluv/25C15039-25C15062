@@ -17,9 +17,9 @@ Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông
 
 CateEA gồm ba modules chính (Hình~\ref{fig:cateea_pipeline}):
 \begin{itemize}
-    \item \textbf{Multi-Modal Encoder (MME):} Mã hoá từng nguồn thông tin rồi tổng hợp thành joint embedding.
-    \item \textbf{Contrastive Representation Learning (CRL):} Sử dụng phương pháp học tương phản để tinh chỉnh các embedding.
-    \item \textbf{Category Information Enhancement (CIE):} Khai thác thông tin danh mục ngầm để cải thiện việc căn chỉnh các thực thể.
+    \item \textit{Multi-Modal Encoder (MME):} Mã hoá từng nguồn thông tin rồi tổng hợp thành joint embedding.
+    \item \textit{Contrastive Representation Learning (CRL):} Sử dụng phương pháp học tương phản để tinh chỉnh các embedding.
+    \item \textit{Category Information Enhancement (CIE):} Khai thác thông tin danh mục ngầm để cải thiện việc căn chỉnh các thực thể.
     
 \end{itemize}
 
@@ -41,7 +41,7 @@ Hai module MME và CRL là phần nền của CateEA, có nhiệm vụ tạo ra 
 
 MME dùng một bộ encoder riêng cho mỗi phương thức: 
 \begin{itemize}
-    \item Với \textbf{cấu trúc đồ thị:}
+    \item \textit{Với cấu trúc đồ thị:}
         Sử dụng mạng GAT hai tầng để tổng hợp
         thông tin từ các thực thể lân cận thông qua
         cơ chế attention. Mỗi tầng tổng hợp thông tin
@@ -50,9 +50,9 @@ MME dùng một bộ encoder riêng cho mỗi phương thức:
         tối đa hai bước (2-hop). Đầu ra là embedding
         cấu trúc $\mathbf{h}^g_i$. %Toàn sửa
 
-    \item Với \textbf{quan hệ}, \textbf{thuộc tính} và \textbf{tên}, mỗi loại $l \in \{r, a, n\}$ được biểu diễn bằng bag-of-words rồi đưa qua một lớp tuyến tính $\mathbf{h}^l_i = \mathbf{W}_l \mathbf{u}^l_i + \mathbf{b}_l$. Riêng với tên, vector đầu vào là trung bình các vector GloVe đã huấn luyện sẵn của các từ trong tên.
+    \item \textit{Với quan hệ, thuộc tính và tên}, mỗi loại $l \in \{r, a, n\}$ được biểu diễn bằng bag-of-words rồi đưa qua một lớp tuyến tính $\mathbf{h}^l_i = \mathbf{W}_l \mathbf{u}^l_i + \mathbf{b}_l$. Riêng với tên, vector đầu vào là trung bình các vector GloVe đã huấn luyện sẵn của các từ trong tên.
 
-    \item Với \textbf{hình ảnh:} Ảnh của thực thể được đưa qua ResNet-152 đã huấn luyện sẵn, lấy logits của lớp fully connected cuối cùng rồi qua một lớp tuyến tính để được $\mathbf{h}^v_i$.
+    \item \textit{Với hình ảnh:} Ảnh của thực thể được đưa qua ResNet-152 đã huấn luyện sẵn, lấy logits của lớp fully connected cuối cùng rồi qua một lớp tuyến tính để được $\mathbf{h}^v_i$.
 \end{itemize}
 
 Sau khi có embedding của từng modality, joint embedding được tạo bằng cách nối chúng lại, mỗi modality được nhân với một trọng số attention:
@@ -80,12 +80,12 @@ với $\delta_m(u,v) = \exp\!\left(f_m(u)^\top f_m(v) / \tau_1\right)$, $f_m(\cd
 
 Module CRL gồm hai hàm loss:
 \begin{itemize}
-    \item \textbf{ICL (Intra-modal Contrastive Learning):} Với từng modality, kéo cặp thực thể tương ứng lại gần nhau và đẩy các thực thể khác ra xa:
+    \item \textit{ICL (Intra-modal Contrastive Learning):} Với từng modality, kéo cặp thực thể tương ứng lại gần nhau và đẩy các thực thể khác ra xa:
     \[
         \mathcal{L}^{ICL}_m = -\mathbb{E}_{i \in B}\log
         \tfrac{1}{2}\left[q_m(e^1_i, e^2_i) + q_m(e^2_i, e^1_i)\right].
     \]
-  \item \textbf{IAL (Inter-modal Alignment Learning):} Tính các vector phân phối xác suất $\mathbf{q}'_o$ từ joint embedding và $\mathbf{q}'_m$ từ modality $m$ trên cùng tập ứng viên, sử dụng nhiệt độ $\tau_2$. Sau đó, sử dụng KL divergence để đưa phân phối của modality $m$ tiệm cận với phân phối của joint embedding theo cả hai chiều:
+  \item \textit{IAL (Inter-modal Alignment Learning):} Tính các vector phân phối xác suất $\mathbf{q}'_o$ từ joint embedding và $\mathbf{q}'_m$ từ modality $m$ trên cùng tập ứng viên, sử dụng nhiệt độ $\tau_2$. Sau đó, sử dụng KL divergence để đưa phân phối của modality $m$ tiệm cận với phân phối của joint embedding theo cả hai chiều:
 
     \begin{equation}
         \begin{aligned}
@@ -118,7 +118,7 @@ Nhóm hiểu hai hàm loss này bổ sung cho nhau. ICL chỉ xét từng modali
 
 Đây là module mang tính novelty và là đóng góp chính của CateEA.
 
-Module này có hai thành phần là Category Embedding Enhancement và Category Alignment Enhancement:
+Module này có hai thành phần là \textit{Category Embedding Enhancement} và \textit{Category Alignment Enhancement}:
 
 \paragraph{Category Embedding Enhancement (CEE)}
 
@@ -241,8 +241,8 @@ Nhóm sử dụng mã nguồn công khai của tác giả và bổ sung các scr
 
 Theo cấu hình được ghi nhận trong repository, môi trường thực nghiệm sử dụng Ubuntu 24.04, GPU NVIDIA GeForce RTX 5090 với 32 GB VRAM, Python 3.12 và PyTorch 2.13.0 với CUDA 13.0. Dữ liệu được lấy từ gói dữ liệu do MEAformer cung cấp, gồm:
 \begin{itemize}
-    \item DBP15K: ba cặp ngôn ngữ ZH-EN, JA-EN và FR-EN, với tỷ lệ cặp thực thể huấn luyện là 30\%.
-    \item MMKB: FB15K-DB15K và FB15K-YAGO15K, với các tỷ lệ huấn luyện 20\%, 50\% và 80\%.
+    \item \textit{DBP15K:} ba cặp ngôn ngữ ZH-EN, JA-EN và FR-EN, với tỷ lệ cặp thực thể huấn luyện là 30\%.
+    \item \textit{MMKB:} FB15K-DB15K và FB15K-YAGO15K, với các tỷ lệ huấn luyện 20\%, 50\% và 80\%.
 \end{itemize}
 
 Trên DBP15K, nhóm chạy hai chế độ non-iterative và iterative, mỗi chế độ có cấu hình sử dụng và không sử dụng surface form (SF). Trong mã nguồn, cấu hình w/o SF tắt cả đặc trưng tên và ký tự. Trên MMKB, nhóm chạy hai chế độ với ba tỷ lệ huấn luyện, không sử dụng các đặc trưng này. Tổng cộng có 24 cấu hình thực nghiệm.
@@ -252,7 +252,7 @@ Các script đặt số epoch là 1000, learning rate $5\times10^{-4}$, batch si
 Mã nguồn ghi nhận Hits@1, Hits@10, Hits@50 và MRR theo hai chiều căn chỉnh. Checkpoint tốt nhất được chọn theo Hits@1 trung bình hai chiều của nhánh đánh giá thông thường (\texttt{test}). Nhánh có điều chỉnh danh mục (\texttt{weighted}) được đánh giá và ghi nhận riêng tại cùng checkpoint. Nhóm sử dụng kết quả của nhánh \texttt{weighted} tại checkpoint này để so sánh với bài báo.
 
 
-\noindent\textit{Giới hạn của giao thức đánh giá:} Nhóm chọn checkpoint dựa trên Hits@1 của tập kiểm tra, thay vì một tập validation độc lập. Vì vậy, tập kiểm tra đồng thời tham gia lựa chọn mô hình và đánh giá kết quả cuối cùng, có thể khiến kết quả được báo cáo lạc quan hơn so với đánh giá trên dữ liệu chưa tham gia lựa chọn. Các kết quả CateEA cần được diễn giải cùng giới hạn này.
+\noindent\textit{Giới hạn của giao thức đánh giá:} Nhóm \textbf{chọn checkpoint dựa trên Hits@1 của tập kiểm tra}, thay vì một tập validation độc lập. Vì vậy, tập kiểm tra đồng thời tham gia lựa chọn mô hình và đánh giá kết quả cuối cùng, có thể khiến kết quả được báo cáo lạc quan hơn so với đánh giá trên dữ liệu chưa tham gia lựa chọn. Các kết quả CateEA cần được diễn giải cùng giới hạn này.
 
 
 Các lần chạy được theo dõi tại \href{https://forge.coreweave.com/wandb/keiranoluv-hcmus/cateea-reproduction}{W\&B}.
@@ -328,13 +328,13 @@ Trong quá trình tìm hiểu và tái lập, nhóm ghi nhận một số sai kh
 Nhóm đối chiếu mã nguồn CateEA tại commit
 \texttt{8c277f3} với mô tả phương pháp trong bài báo và ghi nhận:
 \begin{itemize}
-  \item \textbf{Đầu vào phân cụm:} mã nguồn tạo một vector cho
+  \item \textit{Đầu vào phân cụm:} mã nguồn tạo một vector cho
   mỗi cặp căn chỉnh $(u_i,v_i)$ bằng phép cộng
   $\hat{h}_{u_i}+\hat{h}_{v_i}$, rồi phân cụm các vector này,
   thay vì trực tiếp phân cụm từng biểu diễn thực thể.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/myrun.py\#L461-L474}{CateEA: tạo đầu vào và nhãn phân cụm.}}
 
-  \item \textbf{Ghép nhãn giả:} nhãn được tạo theo thứ tự các
+  \item \textit{Ghép nhãn giả:} nhãn được tạo theo thứ tự các
   cặp trong \texttt{train\_ill}, nhưng loss phân loại sử dụng
   \texttt{joint\_emb[si:end\_idx]} cùng
   \texttt{cluster\_labels[si:end\_idx]}, không truy xuất
@@ -349,17 +349,17 @@ Nhóm đối chiếu mã nguồn CateEA tại commit
   sang nhãn giả. Ví dụ chỉ minh họa chỉ số, không phải dữ
   liệu quan sát từ một lần chạy cụ thể.
 
-  \item \textbf{Số cụm:} mã nguồn gán trực tiếp
+  \item \textit{Số cụm:} mã nguồn gán trực tiếp
   \texttt{num\_category = 5}, trong khi mục~4.1.3 của bài báo
   công bố sử dụng 10 danh mục.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/myrun.py\#L466-L474}{CateEA: số cụm cố định trong mã nguồn.}}
 
-  \item \textbf{Chuẩn hóa trọng số danh mục:} bài báo sử dụng
+  \item \textit{Chuẩn hóa trọng số danh mục:} bài báo sử dụng
   softmax, còn code tính $w_{ij}=s_{ij}/\sum_k s_{ik}$.
   Hai phép chuẩn hóa này nói chung không tương đương.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/myrun.py\#L774-L782}{CateEA: chuẩn hóa trọng số danh mục.}}
 
-  \item \textbf{Đại lượng được hiệu chỉnh:} bài báo nhân trọng
+  \item \textit{Đại lượng được hiệu chỉnh:} bài báo nhân trọng
   số danh mục với độ tương đồng, còn code nhân trọng số với
   khoảng cách thực thể. Sau đó code có thể áp dụng CSLS và
   xếp hạng theo giá trị khoảng cách tăng dần. Vì vậy, không
