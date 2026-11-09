@@ -34,7 +34,7 @@ cũng cải thiện chất lượng dự đoán.
     \label{fig:dsom_motivation}
 \end{figure}
 
-Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu, không liên quan như phân tích ở đoạn đầu tiên. Và tác giả cũng định nghĩa ``Dark Knowlegde'' là tri thức ẩn trong phân phối dự đoán. Student không chỉ học đáp án đúng mà học cả phân phối logit từ teacher.
+Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu, không liên quan như phân tích ở đoạn đầu tiên. Và tác giả cũng định nghĩa ``Dark Knowledge'' là tri thức ẩn trong phân phối dự đoán. Student không chỉ học đáp án đúng mà học cả phân phối logit từ teacher.
 
 Nhóm phân tích cơ chế lựa chọn tổ hợp giáo viên RC theo bốn thành phần của học tăng cường: trạng thái, hành động, phần thưởng và chính sách.
 
@@ -62,7 +62,7 @@ học sinh thông qua NDKD.
 
 \subsubsection{Xây dựng các mô hình giáo viên và học sinh}
 
-Để thực hiện Knowlegde Distillation, tác giả sẽ xây dựng các mô hình teacher và student. Trong paper, tác giả xây dựng ba teacher, mỗi teacher sẽ được học từ một nguồn phương thức tương ứng. Cụ thể là một teacher học từ thông tin cấu trúc (structure),
+Để thực hiện Knowledge Distillation, tác giả sẽ xây dựng các mô hình teacher và student. Trong paper, tác giả xây dựng ba teacher, mỗi teacher sẽ được học từ một nguồn phương thức tương ứng. Cụ thể là một teacher học từ thông tin cấu trúc (structure),
 một teacher học thông tin từ hình ảnh (visual), và một teacher cuối học từ văn bản (textual). Các teacher được huấn luyện trước để dự đoán thực thể còn thiếu.  Theo cách hiểu của nhóm, việc phân chia như vậy giúp mô hình giữ lại được những góc nhìn khác nhau khi đánh giá cùng một truy vấn, thay vì kết hợp toàn bộ
 thông tin ngay từ đầu.
 
@@ -113,7 +113,7 @@ Trong cơ chế này, agent không trực tiếp thực hiện bài toán MKGR, 
 \textit{a) Trạng thái (State):}
 
 
-Agent cần có thông tin để quyết định nên lựa chọn teacher nào. Trạng thái trong DSoM được tạo bằng cach nối 3 vector logits của ba teacher:
+Agent cần có thông tin để quyết định nên lựa chọn teacher nào. Trạng thái trong DSoM được tạo bằng cách nối 3 vector logits của ba teacher:
 
 \begin{equation}
 s_i=[F_s\|F_v\|F_d].

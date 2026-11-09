@@ -2,7 +2,7 @@
 
 \subsection{Ý tưởng chính} %Hùng
 % Giải thích ý tưởng cốt lõi bằng ví dụ, không lặp lại định nghĩa MMEA.
-Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể (cấu trúc, quan hệ, thuộc tính, tên, hình ảnh) thành một vector duy nhất, rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng. Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính về tính tương đương của hai thực thể. Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể "Chow Chow" (một giống chó) và "Lion" (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau, trong khi thực tế đây là hai loài khác nhau. Mô hình chỉ nhìn vào độ tương đồng của vetor đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau, trong khi con người nhìn vào là phân biệt được ngay.
+Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể (cấu trúc, quan hệ, thuộc tính, tên, hình ảnh) thành một vector duy nhất, rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng. Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính tương đương của hai thực thể. Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể "Chow Chow" (một giống chó) và "Lion" (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau, trong khi thực tế đây là hai loài khác nhau. Mô hình chỉ nhìn vào độ tương đồng của vector đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau, trong khi con người nhìn vào là phân biệt được ngay.
 
 \begin{figure}[htp]
 \centering
@@ -11,14 +11,14 @@ Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông
 \label{fig:cateea_idea}
 \end{figure}
 
-Để giải quyết vấn đề này, nhóm tác giả đã để xuất phương pháp CateEA - với ý tưởng chính là đưa thông tin danh mục ngầm vào quá trình căn chỉnh thực thể để giảm những nhầm lẫn như trên.
+Để giải quyết vấn đề này, nhóm tác giả đã đề xuất phương pháp CateEA - với ý tưởng chính là đưa thông tin danh mục ngầm vào quá trình căn chỉnh thực thể để giảm những nhầm lẫn như trên.
 
 \subsection{Phương pháp và phân tích}
 
 CateEA gồm ba modules chính (Hình~\ref{fig:cateea_pipeline}):
 \begin{itemize}
-    \item \textbf{Multi-Modal Encoder (MME): }Mã hoá từng nguồn thông tin rồi tổng hợp thành join embedding.
-    \item \textbf{Contrastive Representation Learning (CRL): }Sử dụng phương pháp học tương phản để tinh chinh các embedding.
+    \item \textbf{Multi-Modal Encoder (MME): }Mã hoá từng nguồn thông tin rồi tổng hợp thành joint embedding.
+    \item \textbf{Contrastive Representation Learning (CRL): }Sử dụng phương pháp học tương phản để tinh chỉnh các embedding.
     \item \textbf{Category Information Enhancement (CIE): }Khai thác thông tin danh mục ngầm để cải thiện việc căn chỉnh các thực thể.
     
 \end{itemize}
@@ -52,7 +52,7 @@ MME dùng một bộ encoder riêng cho mỗi phương thức:
 
     \item Với \textbf{quan hệ}, \textbf{thuộc tính} và \textbf{tên}, mỗi loại $l \in \{r, a, n\}$ được biểu diễn bằng bag-of-words rồi đưa qua một lớp tuyến tính $\mathbf{h}^l_i = \mathbf{W}_l \mathbf{u}^l_i + \mathbf{b}_l$. Riêng với tên, vector đầu vào là trung bình các vector GloVe đã huấn luyện sẵn của các từ trong tên.
 
-    \item Với \textbf{hình ảnh: }Ảnh của thực thể được đưa qua ResNet-152 đã huấn luyên sẵn, lấy logits của lớp fully connected cuối cùng rồi qua một lớp tuyến tỉnh để được $\mathbf{h}^v_i$.
+    \item Với \textbf{hình ảnh: }Ảnh của thực thể được đưa qua ResNet-152 đã huấn luyện sẵn, lấy logits của lớp fully connected cuối cùng rồi qua một lớp tuyến tính để được $\mathbf{h}^v_i$.
 \end{itemize}
 
 Sau khi có embedding của từng modality, joint embedding được tạo bằng cách nối chúng lại, mỗi modality được nhân với một trọng số attention:
@@ -110,7 +110,7 @@ Nhóm hiểu hai hàm loss này bổ sung cho nhau. ICL chỉ xét từng modali
 % CAE: tính trọng số danh mục và điều chỉnh điểm căn chỉnh.
 % Phân biệt huấn luyện với suy luận; phân tích các giả định.
 
-Đây chính là module mang tính novelty và là đóng góp chính của tác giả trong công trình này. Module này thể hiện rõ ý tưởng chính của paper như đã trình bày ở mục trên. Ý tưởng này cũng được thể hiện ngay trong tên paper: "CateEA: Enhancing Entity Alignment via Implicit Category Supervision". Trong paper của tác giả thì module này được trình bày trong khoảng một trang để mô tả chi tiết về nó cũng như là các công thức liên quan. Ở đây nhóm xin trình bày lại theo các hiểu của nhóm, và có những phân tích, nhận xét riêng về nó.
+Đây chính là module mang tính novelty và là đóng góp chính của tác giả trong công trình này. Module này thể hiện rõ ý tưởng chính của paper như đã trình bày ở mục trên. Ý tưởng này cũng được thể hiện ngay trong tên paper: "CateEA: Enhancing Entity Alignment via Implicit Category Supervision". Trong paper của tác giả thì module này được trình bày trong khoảng một trang để mô tả chi tiết về nó cũng như là các công thức liên quan. Ở đây nhóm xin trình bày lại theo cách hiểu của nhóm, và có những phân tích, nhận xét riêng về nó.
 
 Module này có hai thành phần là Category Embedding Enhancement và Category Alignment Enhancement:
 
@@ -124,7 +124,7 @@ Cụ thể hơn về tác động của clustering và classifier: Loss phân lo
 Việc phân cụm này không tự tạo thêm dữ liệu hay tri thức từ bên ngoài. Nó tổ chức lại những đặc điểm đã có trong không gian embedding, rồi biến cách tổ chức đó thành tín hiệu giám sát bổ sung. Ngoài ra "danh mục ngầm - implicit category" chưa chắc đã tương ứng với các danh mục thực sự ngoài thế giới thật. Phương pháp của tác giả đề xuất cơ chế này dựa trên ý tưởng khai thác thông tin danh mục ngầm ngoài thế giới thực, nhưng tác giả chưa chỉ ra các embedding trong cùng một cụm có thuộc một danh mục nào đó ngoài thực tế hay không.
 
 
-Ngoài loss của classifier, nhóm còn quan tâm đến cấu trúc phân cụm. Paper sử dụng K-Medoids để chia các embedding thành $k$ cụm ở một cấp, với $k$ được xác định trước, không xây dựng các cụm cha-con hay phân cụm lồng nhau. Tác giả giải thích việc chọn K-Medoids dựa trên đặc điểm sử dụng điểm dữ liệu thực làm đại diện cụm và khả năng chống chịu nhiễu, outlier,... Tuy nhiên, paper chưa cung cấp thực nghiệm so sánh với các phương pháp phân cụm khác để kiểm chứng lợi ích của lựa chọn này trong CateEA. Phần phân tích tham số của tác giả chỉ khảo sát ảnh hưởng của số cụm $k$ khi sử dụng K-Medoids \cite{feng-etal-2025-cateea}. Và lưu ý rằng việc phân cụm chỉ xảy ra ở quá trình training, ở quá trình inference, embedding sau khi đi qua hai module MME và CRL sẽ được vào thẳng classifer để được gán nhãn danh mục ngầm tương ứng mà không đi qua thuật toán clustering nữa.
+Ngoài loss của classifier, nhóm còn quan tâm đến cấu trúc phân cụm. Paper sử dụng K-Medoids để chia các embedding thành $k$ cụm ở một cấp, với $k$ được xác định trước, không xây dựng các cụm cha-con hay phân cụm lồng nhau. Tác giả giải thích việc chọn K-Medoids dựa trên đặc điểm sử dụng điểm dữ liệu thực làm đại diện cụm và khả năng chống chịu nhiễu, outlier,... Tuy nhiên, paper chưa cung cấp thực nghiệm so sánh với các phương pháp phân cụm khác để kiểm chứng lợi ích của lựa chọn này trong CateEA. Phần phân tích tham số của tác giả chỉ khảo sát ảnh hưởng của số cụm $k$ khi sử dụng K-Medoids \cite{feng-etal-2025-cateea}. Và lưu ý rằng việc phân cụm chỉ xảy ra ở quá trình training, ở quá trình inference, embedding sau khi đi qua hai module MME và CRL sẽ được vào thẳng classifier để được gán nhãn danh mục ngầm tương ứng mà không đi qua thuật toán clustering nữa.
 
 \paragraph{Category Alignment Enhancement (CAE)}
 
@@ -523,7 +523,7 @@ Trong quá trình tìm hiểu và tái lập, nhóm ghi nhận một số sai kh
 
 % \begin{itemize}
 %     \item 
-%     Paper viết việc phân cụm dựa trên joint embedding của một thực thể. Trong code, với mỗi cặp thực thể tương ứng đã biét, hai embedding này được cộng lại thành một vector mới rồi được đưa vào phân cụm.
+%     Paper viết việc phân cụm dựa trên joint embedding của một thực thể. Trong code, với mỗi cặp thực thể tương ứng đã biết, hai embedding này được cộng lại thành một vector mới rồi được đưa vào phân cụm.
 
 %     \item 
 %     Sau khi tạo nhãn giả cho từng cặp thực thể ở bước trên, code ghép các nhãn này với thực thể theo thứ tự trong danh sách ban đầu, thay vì gán nhãn cho đúng hai thực thể thuộc cặp tương ứng.
@@ -588,6 +588,6 @@ Nhóm đã xác nhận các sai khác trên khi đọc mã nguồn, nhưng chưa
 
 Theo nhóm, điểm đáng chú ý của CateEA là biến kết quả phân cụm thành tín hiệu giám sát bổ sung cho việc học biểu diễn, đồng thời sử dụng thông tin danh mục khi xếp hạng ứng viên. Phương pháp này không cần nhãn danh mục thủ công, nhưng hiệu quả phụ thuộc vào chất lượng nhãn giả và cách khai thác chúng.
 
-Những phân tích ở phần phương pháp cũng đặt ra các vấn đề chưa được paper làm rõ: các cụm có phản ánh danh mục ngữ nghĩa ngoài thực tế hay không, lợi ích của K-Medoids so với các phương pháp phân cụm khác, và ảnh hưởng của việc sử dụng centroid trong CAE. Mặc dù tác giả chứng minh CateEA có hiệu quả tốt hơn nhờ những benchmark, albation study nhưng tác giả chưa trả lời đầy đủ các câu hỏi đó.
+Những phân tích ở phần phương pháp cũng đặt ra các vấn đề chưa được paper làm rõ: các cụm có phản ánh danh mục ngữ nghĩa ngoài thực tế hay không, lợi ích của K-Medoids so với các phương pháp phân cụm khác, và ảnh hưởng của việc sử dụng centroid trong CAE. Mặc dù tác giả chứng minh CateEA có hiệu quả tốt hơn nhờ những benchmark, ablation study nhưng tác giả chưa trả lời đầy đủ các câu hỏi đó.
 
 Ngoài ra kết quả tái lập cho thấy có xu hướng cải thiện từ SF trên DBP15K và từ iterative trên các cấu hình đã chạy. Tuy nhiên, những so sánh này chưa tách riêng đóng góp của CEE và CAE. Để kiểm chứng sâu hơn, nhóm cho rằng cần đối chiếu rõ kết quả có và không có CAE tại cùng checkpoint, thực hiện ablation cho CEE, kiểm tra và sửa lại từng sai khác mã nguồn và chạy nhiều random seed để đánh giá độ ổn định.
