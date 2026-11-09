@@ -164,53 +164,70 @@ Một nhận xét của nhóm: Paper chọn K-Medoids vì paper lý giải rằn
 
 Nhóm cũng cho rằng CAE đang dựa trên giả thuyết: khoảng cách giữa các centroid thể hiện mức độ phù hợp giữa các danh mục cho việc căn chỉnh. Vấn đề nhóm thấy là centroid là biểu diễn giá trị trung bình, chưa phản ánh độ phân tán thực thể bên trong nhóm đó. Ngoài ra nếu classifier dự đoán sai nhãn, sai số này có thể ảnh hưởng đến cả centroid và trọng số hiệu chỉnh. Vì vậy, CAE không đảm bảo luôn cải thiện xếp hạng. 
 
-Hình~\ref{alg:cateea} trình bày giả mã chi tiết khai thác
-thông tin danh mục ngầm trong CateEA.
+Hình~\ref{alg:cateea} tóm tắt luồng khai thác danh mục ngầm
+được nhóm diễn giải lại theo mô tả phương pháp trong bài báo.
+Giả mã tách hai giai đoạn huấn luyện và suy luận; các sai khác
+của mã nguồn công khai được phân tích tại
+mục~\ref{sec:cateea_code_comparison}.
 
-\begin{figure}[h]
+\begin{figure}[t]
+\footnotesize
+\renewcommand{\algorithmicrequire}{\textbf{Đầu vào:}}
+\renewcommand{\algorithmicensure}{\textbf{Đầu ra:}}
+\renewcommand{\algorithmicfor}{\textbf{với}}
+\renewcommand{\algorithmicdo}{\textbf{thực hiện}}
+\renewcommand{\algorithmicend}{\textbf{kết thúc}}
+\renewcommand{\algorithmicrepeat}{\textbf{lặp}}
+\renewcommand{\algorithmicuntil}{\textbf{đến khi}}
 \begin{algorithmic}[1]
-
-\REQUIRE Joint embeddings
-$\{\hat{\mathbf{h}}_i\}_{i=1}^{N}$;
-number of categories $C$.
-\ENSURE Adjusted similarity scores $S'$.
-
-\FOR{$i=1,\ldots,N$}
-    \STATE Apply K-Medoids to obtain categories
-    $\{C_1,\ldots,C_C\}$.
+\REQUIRE Hai đồ thị $G_1,G_2$ với tập thực thể $E_1,E_2$;
+    cặp căn chỉnh huấn luyện $\mathcal{A}$; số cụm $C$.
+\ENSURE Danh sách ứng viên đã xếp hạng cho từng truy vấn.
+\STATE Khởi tạo encoder $f_\theta$ và classifier $g_\phi$.
+\STATE \textbf{Huấn luyện: phân cụm và học nhãn giả}
+\REPEAT
+    \STATE Tính $\hat{\mathbf{h}}_e=f_\theta(e)$ cho
+        $e\in E_1\cup E_2$.
+    \STATE Phân cụm toàn bộ embedding bằng K-Medoids;
+        lấy chỉ số cụm làm nhãn giả $y_e$.
+    \FOR{mỗi batch cặp căn chỉnh từ $\mathcal{A}$}
+        \STATE Tính lại embedding của các thực thể trong batch.
+        \STATE Dự đoán phân phối danh mục
+            $\mathbf{p}_e=g_\phi(\hat{\mathbf{h}}_e)$.
+        \STATE Tính $\mathcal{L}_{\mathrm{cls}}$
+            bằng cross-entropy giữa $\mathbf{p}_e$ và $y_e$.
+        \STATE $\mathcal{L}=\mathcal{L}_{\mathrm{align}}
+            +\lambda\mathcal{L}_{\mathrm{cls}}$.
+        \STATE Lan truyền ngược để cập nhật $\theta,\phi$;
+            giữ nhãn giả cố định trong bước cập nhật này.
+    \ENDFOR
+\UNTIL{thỏa điều kiện dừng huấn luyện}
+\STATE \textbf{Suy luận: phân loại và hiệu chỉnh xếp hạng}
+\STATE Tính lại embedding bằng encoder đã huấn luyện.
+\FOR{$g\in\{1,2\}$}
+    \STATE Dự đoán $c_e=\arg\max_c g_\phi(
+        \hat{\mathbf{h}}_e)_c$ với mỗi $e\in E_g$.
+    \STATE Gom nhóm $C_a^{(g)}=\{e\in E_g:c_e=a\}$;
+        tính centroid $\boldsymbol{\mu}_a^{(g)}$
+        bằng trung bình embedding của nhóm.
 \ENDFOR
-
-\FOR{$i=1,\ldots,N$}
-    \STATE $\mathcal{L}_{\mathrm{cls}}
-    =-\frac{1}{N}
-    \sum_{i=1}^{N}\sum_{c=1}^{C}
-    y_{i,c}\log(p_{i,c})$
-    \STATE $\mathcal{L}
-    =\mathcal{L}_{\mathrm{align}}
-    +\lambda\mathcal{L}_{\mathrm{cls}}$
+\STATE Với từng cặp danh mục giữa hai đồ thị, tính
+    $d_{ab}=\|\boldsymbol{\mu}_a^{(1)}
+    -\boldsymbol{\mu}_b^{(2)}\|_2$ và $s_{ab}=1/(1+d_{ab})$.
+\STATE Chuẩn hóa $w_{ab}=\exp(s_{ab})/\sum_k\exp(s_{ak})$.
+\FOR{mỗi thực thể truy vấn $x\in E_1$}
+    \STATE Với mỗi ứng viên $y\in E_2$, tính
+        $S'(x,y)=w_{c_x,c_y}S(x,y)$.
+    \STATE Xếp ứng viên theo $S'(x,y)$ giảm dần;
+        thực hiện tương tự cho chiều ngược lại.
 \ENDFOR
-
-\FOR{$i=1,\ldots,C$}
-    \STATE $\boldsymbol{\mu}_i
-    =\frac{1}{|C_i|}
-    \sum_{x\in C_i}\hat{\mathbf{h}}_x$
-\ENDFOR
-
-\FOR{$i,j=1,\ldots,C$}
-    \STATE $d_{ij}
-    =\|\boldsymbol{\mu}_i-\boldsymbol{\mu}_j\|_2$,
-    \quad $s_{ij}=\frac{1}{1+d_{ij}}$
-    \STATE $w_{ij}
-    =\frac{\exp(s_{ij})}
-    {\sum_{k=1}^{C}\exp(s_{ik})}$
-\ENDFOR
-
-\FORALL{entity pairs $(x,y)$}
-    \STATE $S'(x,y)=w_{c_x,c_y}\,S(x,y)$
-\ENDFOR
-
 \end{algorithmic}
-\caption{Implicit category supervision trích từ CateEA \cite{feng-etal-2025-cateea}.}
+\caption{Luồng khai thác danh mục ngầm do nhóm diễn giải lại
+    theo mô tả CateEA~\cite{feng-etal-2025-cateea}.
+    Lược đồ huấn luyện minh họa việc tạo nhãn giả rồi học với
+    các nhãn đó, không đặc tả lịch cập nhật của mã nguồn.
+    K-Medoids chỉ dùng trong huấn luyện; suy luận dùng classifier.
+    Các centroid được tính cho những nhóm không rỗng.}
 \label{alg:cateea}
 \end{figure}
 \subsection{Tái lập thực nghiệm}
@@ -507,6 +524,7 @@ những chênh lệch nhỏ chưa đủ chứng minh sự cải thiện ổn đ�
 \subsection{Đánh giá và thảo luận}
 
 \subsubsection{Đối chiếu bài báo với mã nguồn}
+\label{sec:cateea_code_comparison}
 
 Trong quá trình tìm hiểu và tái lập, nhóm ghi nhận một số sai khác giữa mô tả phương pháp và mã nguồn công khai. 
 
