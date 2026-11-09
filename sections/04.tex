@@ -524,6 +524,19 @@ Các kết quả test được lấy từ
 \texttt{final\_result} của checkpoint
 được chọn thay vì metric ở epoch cuối.
 
+Về giao thức đánh giá student, với mỗi bộ ba trong tập kiểm tra,
+nhóm thực hiện cả dự đoán đuôi $(h,r,?)$ và dự đoán đầu
+$(?,r,t)$; chiều dự đoán đầu được chuyển thành truy vấn đuôi
+bằng quan hệ nghịch đảo. Mỗi truy vấn xét toàn bộ tập thực thể
+ứng viên của bộ dữ liệu. MR, MRR và Hits@K được tính riêng cho
+mỗi chiều rồi lấy trung bình hai chiều. Các kết quả chính dùng
+filtered: khi xếp hạng đáp án đích, loại các đáp án đúng khác
+đã biết từ hợp các tập train, validation và test. Riêng WN9,
+nhóm báo thêm raw trên cùng checkpoint để đối chiếu. Các bộ lọc
+đánh giá này khác với tập neighbors dùng trong NDKD, vốn chỉ
+được xây dựng từ các bộ ba huấn luyện và các bộ ba nghịch đảo
+tương ứng.
+
 Giới hạn về dữ liệu: Tập validation của DB15K trong nguồn dữ liệu công khai có các bộ ba trùng với tập huấn luyện và tập kiểm tra. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
 
 Nhóm sử dụng ba chế độ thực nghiệm:
