@@ -15,6 +15,56 @@ trong lựa chọn chưa đủ chứng minh agent đã loại bỏ được thô
 tin nhiễu. Cần đối chiếu lựa chọn của agent với chất lượng dự
 đoán của teacher và kết quả student trên cùng nhóm truy vấn.
 
+\subsubsection{Trao đổi với tác giả}
+\label{sec:dsom_author_correspondence}
+
+Nhóm đã gửi email để làm rõ cấu hình và giao thức tái lập
+kết quả student trên FB15K-237 trong Table 3 của paper.
+Yu Zhao, đồng tác giả DSoM, đã phản hồi với các thông tin sau:
+\begin{itemize}
+    \item \textit{Cấu hình và thời gian huấn luyện:} Tác giả
+    xác nhận dùng tối đa 200 epochs và batch size 1000.
+    Theo log gốc, student trên FB15K-237 hội tụ sau 53 epochs,
+    trung bình 206.11 giây/epoch trên phần cứng của tác giả.
+    Tác giả cũng gợi ý vector hóa
+    \texttt{\_get\_gt\_mask\_multi} khi hàm này gây chậm.
+
+    \item \textit{Tối ưu RC:} Trong DSoM, policy và student
+    được huấn luyện đồng thời, không cần giai đoạn huấn luyện
+    hay optimizer riêng cho RC. Riêng cấu hình
+    ``w/ RC on val.'' trong Table 4, RC được tối ưu riêng trên
+    validation để thay meta-learner của MoSE; cấu hình này
+    không huấn luyện student và không thực hiện KD.
+
+    \item \textit{Scheduler:} Tác giả xác nhận
+    \texttt{ReduceLROnPlateau} cần dùng \texttt{mode} là
+    \texttt{max} khi theo dõi validation Hits@10; thiết lập
+    \texttt{min} trong mã nguồn là lỗi. Tác giả cho biết đã
+    thử sửa và ghi nhận sai khác nhỏ về kết quả, đồng thời
+    checkpoint cuối vẫn được chọn theo validation MRR.
+    Đây là nhận xét từ thí nghiệm của tác giả, chưa phải
+    phép đo riêng của nhóm về ảnh hưởng của scheduler.
+
+    \item \textit{Neighbors trong NDKD:} Tác giả xác nhận
+    neighbors chỉ lấy từ các bộ ba huấn luyện, qua
+    \texttt{train\_to\_skip}, không đưa các bộ ba validation
+    hay test vào tập này. Phản hồi này phù hợp với cách
+    dựng neighbors trong pipeline tái lập của nhóm.
+
+    \item \textit{Hành vi policy:} Theo tác giả, cả bảy
+    chiến lược đều có tỷ lệ chọn khác 0 trên DB15K, MKG-W và
+    MKG-Y như Figure 3 của paper. Tuy nhiên, tác giả chưa
+    khảo sát có hệ thống hiện tượng policy tập trung vào
+    một chiến lược và chỉ còn log hạn chế. Tác giả gợi ý
+    thử điều chỉnh nhiệt độ policy qua \texttt{policy\_temp}.
+\end{itemize}
+
+Phản hồi mô tả cách huấn luyện mà tác giả xác nhận. Tuy
+nhiên, tại commit công khai nhóm đã kiểm tra, optimizer chưa
+cập nhật tham số policy như đã nêu trong phần thiết lập
+thực nghiệm. Vì vậy, trao đổi qua email chưa giải quyết được
+sai khác giữa cách tối ưu tác giả mô tả và mã nguồn phát hành.
+
 \subsubsection{Phạm vi kiểm chứng của kết quả tái lập}
 
 Các so sánh ở Bảng~\ref{tab:dsom_table4} và

@@ -580,7 +580,11 @@ Nhóm sử dụng ba chế độ thực nghiệm:
         Do đó, ``frozen'' chỉ việc giữ nguyên tham số policy, không
         đồng nghĩa luôn chọn một tổ hợp teacher cố định. Các kết quả
         này chưa chứng minh hiệu quả của việc học policy bằng RL.
-    \item \textit{\texttt{learned\_RC}:} Bổ sung optimizer riêng để huấn luyện policy theo cơ chế RL giống mô tả của paper;
+    \item \textit{\texttt{learned\_RC}:} Nhóm bổ sung optimizer
+        riêng để cập nhật policy theo cơ chế RL. Cách tách
+        optimizer là lựa chọn triển khai của nhóm, khác với
+        cách tối ưu được tác giả mô tả qua email ở
+        mục~\ref{sec:dsom_author_correspondence};
     \item \textit{\texttt{fixed\_teacher}:} Sử dụng một teacher hoặc tổ hợp cố định, không qua agent. Sự phân biệt này giúp đánh giá riêng khả năng tái lập mã nguồn và hiệu quả của cơ chế RL được đề xuất trong paper.
 \end{itemize}
 
