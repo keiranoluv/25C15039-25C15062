@@ -1,0 +1,35 @@
+\subsection{Đánh giá và thảo luận}
+\label{sec:dsom_discussion}
+
+\subsubsection{Nhận xét về phương pháp}
+
+DSoM khai thác thông tin
+đa phương thức trong huấn luyện teacher nhưng student chỉ dùng cấu trúc
+khi suy luận. Còn RC lựa chọn nguồn hướng dẫn cho từng mẫu, trong khi
+NDKD phân tách thông tin được truyền từ teacher.
+
+Ở mục~5.5 của bài báo~\cite{10.1145/3746027.3754576}, tác giả
+phân tích tỷ lệ lựa chọn các tổ hợp teacher. Theo nhóm, các
+thống kê này giúp mô tả hành vi của policy, nhưng sự đa dạng
+trong lựa chọn chưa đủ chứng minh agent đã loại bỏ được thông
+tin nhiễu. Cần đối chiếu lựa chọn của agent với chất lượng dự
+đoán của teacher và kết quả student trên cùng nhóm truy vấn.
+
+\subsubsection{Phạm vi kiểm chứng của kết quả tái lập}
+
+Các so sánh ở Bảng~\ref{tab:dsom_table4} và
+Bảng~\ref{tab:dsom_ablation} chưa cho thấy learned RC có ưu
+thế ổn định so với những lựa chọn đơn giản trong các lần chạy
+của nhóm. Nhận xét này áp dụng cho những cấu hình đã chạy
+với một random seed. Nhóm chưa thể tách riêng nguyên nhân
+của các chênh lệch vì quá trình tái lập còn có những sai khác
+về dữ liệu, đặc trưng và cách triển khai.
+
+Nhóm cũng phân biệt việc chạy lại mã nguồn với việc kiểm
+chứng đầy đủ mô tả phương pháp. Cấu hình \texttt{source\_frozen}
+không kiểm chứng được quá trình học policy của tác giả;
+sai khác giữa trung bình và tổng trong NEKD còn làm thay đổi
+mục tiêu distillation. Vì vậy, metric gần với paper chưa đủ
+xác nhận hai quy trình tương đương. Các giới hạn về validation
+DB15K, đặc trưng ảnh tái tạo và giao thức đánh giá đã nêu
+cần được xem xét khi đối chiếu kết quả.

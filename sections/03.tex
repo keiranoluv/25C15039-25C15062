@@ -1,8 +1,25 @@
 \section{CateEA: Enhancing Entity Alignment via Implicit Category Supervision}
 
-\subsection{Ý tưởng chính} %Hùng
-% Giải thích ý tưởng cốt lõi bằng ví dụ, không lặp lại định nghĩa MMEA.
-Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể (cấu trúc, quan hệ, thuộc tính, tên, hình ảnh) thành một vector duy nhất, rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng. Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính tương đương của hai thực thể. Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể "Chow Chow" (một giống chó) và "Lion" (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau, trong khi thực tế đây là hai loài khác nhau. Mô hình chỉ nhìn vào độ tương đồng của vector đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau, trong khi con người nhìn vào là phân biệt được ngay.
+\subsection{Bài toán và ý tưởng chính} %Hùng
+% Nhắc đầu vào và đầu ra trước khi trình bày ý tưởng chính.
+Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể thành một vector duy nhất, rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng. Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính tương đương của hai thực thể. Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể ``Chow Chow'' (một giống chó) và ``Lion'' (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau, trong khi thực tế đây là hai loài khác nhau. Mô hình chỉ nhìn vào độ tương đồng của vector đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau, trong khi con người nhìn vào là phân biệt được ngay.
+
+Để làm rõ bài toán căn chỉnh mà CateEA giải quyết, đầu vào
+và đầu ra của mô hình được tóm tắt như sau:
+\begin{itemize}
+    \item \textit{Đầu vào:} Hai đồ thị gồm các node thực thể,
+    cạnh quan hệ, thuộc tính và ảnh, cùng các cặp thực thể tương
+    ứng đã biết để huấn luyện~\cite{feng-etal-2025-cateea}.
+    Đặc trưng cấu trúc lấy từ lân cận, còn đặc trưng quan hệ
+    được tổng hợp từ các loại cạnh gắn với node. Trong code,
+    ảnh là vector đặc trưng có sẵn; cấu hình có SF còn dùng tên
+    và đặc trưng ký tự từ tên.
+    \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/Load.py\#L155-L185}{CateEA: tạo đặc trưng tên và ký tự.}}
+
+    \item \textit{Đầu ra:} Các cặp thực thể được dự đoán là
+    cùng một đối tượng giữa hai đồ thị, dựa trên xếp hạng ứng
+    viên ở đồ thị còn lại.
+\end{itemize}
 
 \begin{figure}[htp]
 \centering
@@ -26,7 +43,7 @@ CateEA gồm ba modules chính (Hình~\ref{fig:cateea_pipeline}):
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/pipeline.png}
-\caption{Kiến trúc tổng quan của CateEA. Các modality được mã hóa rồi kết hợp thành một joint embedding duy nhất. Joint embedding này được tinh chỉnh qua module CRL để các thực thể tương ứng nằm gần nhau hơn. Song song đó, các embedding được phân cụm để tạo pseudo-category, và thông tin danh mục này được dùng để hỗ trợ huấn luyện và điều chỉnh độ tương đồng giữa các cặp thực thể. Nguồn: \cite{feng-etal-2025-cateea}, Fig. 2. Lưu ý: hình gốc chưa đánh dấu GAT là trainable; trong mã nguồn, các tham số GAT vẫn được cập nhật khi huấn luyện.}
+\caption{Kiến trúc tổng quan của CateEA. Các modality được mã hóa rồi kết hợp thành một joint embedding duy nhất. Joint embedding này được tinh chỉnh qua module CRL để các thực thể tương ứng nằm gần nhau hơn. Song song đó, các embedding được phân cụm để tạo pseudo-category, và thông tin danh mục này được dùng để hỗ trợ huấn luyện và điều chỉnh độ tương đồng giữa các cặp thực thể. Nguồn: \cite{feng-etal-2025-cateea}, Fig. 2. Lưu ý: hình gốc chưa đánh dấu GAT là trainable; trong phương pháp của paper và mã nguồn, các tham số GAT vẫn được cập nhật khi huấn luyện.}
 \label{fig:cateea_pipeline}
 \end{figure*}
 
@@ -50,7 +67,7 @@ MME dùng một bộ encoder riêng cho mỗi phương thức:
         tối đa hai bước (2-hop). Đầu ra là embedding
         cấu trúc $\mathbf{h}^g_i$. %Toàn sửa
 
-    \item \textit{Với quan hệ, thuộc tính và tên}, mỗi loại $l \in \{r, a, n\}$ được biểu diễn bằng bag-of-words rồi đưa qua một lớp tuyến tính $\mathbf{h}^l_i = \mathbf{W}_l \mathbf{u}^l_i + \mathbf{b}_l$. Riêng với tên, vector đầu vào là trung bình các vector GloVe đã huấn luyện sẵn của các từ trong tên.
+    \item \textit{Với quan hệ, thuộc tính và tên}, mỗi loại $l \in \{r, a, n\}$ ($r$: relation, $a$: attribute, $n$: name) được biểu diễn bằng bag-of-words rồi đưa qua một lớp tuyến tính $\mathbf{h}^l_i = \mathbf{W}_l \mathbf{u}^l_i + \mathbf{b}_l$. Riêng với tên, vector đầu vào là trung bình các vector GloVe đã huấn luyện sẵn của các từ trong tên.
 
     \item \textit{Với hình ảnh:} Ảnh của thực thể được đưa qua ResNet-152 đã huấn luyện sẵn, lấy logits của lớp fully connected cuối cùng rồi qua một lớp tuyến tính để được $\mathbf{h}^v_i$.
 \end{itemize}
@@ -64,7 +81,11 @@ Sau khi có embedding của từng modality, joint embedding được tạo bằ
 Ở đây $\mathcal{M}=\{g,r,a,n,v\}$, $\oplus$ là phép nối vector và $w_m$ là trọng số attention học được của modality $m$.
 
 
-\noindent\textit{Nhận xét của nhóm:} $w_m$ là tham số dùng chung cho mọi thực thể, nên mô hình chỉ học được modality nào nhìn chung đáng tin hơn, chứ không điều chỉnh riêng cho từng thực thể. Cách này đơn giản hơn MEAformer\cite{chen2023meaformer}, nơi trọng số modality thay đổi theo từng thực thể. Khi một thực thể thiếu ảnh hoặc thiếu thuộc tính thì modality đó vẫn được gán trọng số như các thực thể khác. Ngoài ra, nhóm thấy nhóm đặc trưng SF ảnh hưởng rất lớn đến kết quả. Ở cả bài báo và kết quả tái lập trên DBP15K, Hits@1 khi có SF đều trên 94\%, còn khi không có SF chỉ khoảng 74--78\% ở chế độ non-iterative. Điều này cho thấy việc bổ sung nhóm đặc trưng SF cải thiện đáng kể kết quả trên DBP15K. Trong cấu hình tái lập, w/o SF tắt cả đặc trưng tên và ký tự, nên so sánh này chưa tách riêng đóng góp của tên thực thể hay của từng phương thức.
+\noindent\textit{Nhận xét của nhóm:} $w_m$ là tham số dùng chung cho mọi thực thể, nên mô hình chỉ học được modality nào nhìn chung đáng tin hơn, chứ không điều chỉnh riêng cho từng thực thể.
+Cách này đơn giản hơn MEAformer\cite{chen2023meaformer}, nơi trọng số modality thay đổi theo từng thực thể.
+Khi một thực thể thiếu ảnh hoặc thiếu thuộc tính thì modality đó vẫn được gán trọng số như các thực thể khác.
+Ngoài ra, nhóm thấy nhóm đặc trưng SF ảnh hưởng rất lớn đến kết quả.
+Ở cả bài báo và kết quả tái lập trên DBP15K, Hits@1 khi có SF đều trên 94\%, còn khi không có SF chỉ khoảng 74-78\% ở chế độ non-iterative. Điều này cho thấy việc bổ sung nhóm đặc trưng SF cải thiện đáng kể kết quả trên DBP15K. Trong cấu hình tái lập, w/o SF tắt cả đặc trưng tên và ký tự, nên so sánh này chưa tách riêng đóng góp của tên thực thể hay của từng phương thức.
 
 \paragraph{Contrastive Representation Learning (CRL)}
 
@@ -76,7 +97,7 @@ Joint embedding từ MME chưa được đảm bảo là các thực thể tươ
     + \sum_{e_j \in \mathcal{N}^{neg}_i}
     \left[\delta_m(e_j, e^1_i) + \delta_m(e^2_i, e_j)\right]},
 \]
-với $\delta_m(u,v) = \exp\!\left(f_m(u)^\top f_m(v) / \tau_1\right)$, $f_m(\cdot)$ là encoder của modality $m$ và $\tau_1$ là nhiệt độ.
+với $\delta_m(u,v) = \exp\!\left(f_m(u)^\top f_m(v) / \tau_1\right)$, $f_m(\cdot)$ là encoder của modality $m$ và $\tau_1$ là temperature (nhiệt độ).
 
 Module CRL gồm hai hàm loss:
 \begin{itemize}
@@ -127,7 +148,7 @@ Module này có hai thành phần là \textit{Category Embedding Enhancement} v�
 
 Loss phân loại không trực tiếp kéo các embedding cùng cụm lại gần nhau, mà khuyến khích encoder tạo ra các embedding có những đặc điểm giúp phân biệt các danh mục với nhau. Luồng gradient từ loss phân loại về encoder được xác nhận trong code; tuy nhiên, việc ghép nhãn giả với embedding có sai khác sẽ được phân tích ở phần đối chiếu mã nguồn.
 
-Việc phân cụm này không tự tạo thêm dữ liệu hay tri thức từ bên ngoài. Nó tổ chức lại những đặc điểm đã có trong không gian embedding, rồi biến cách tổ chức đó thành tín hiệu giám sát bổ sung. Ngoài ra "danh mục ngầm - implicit category" chưa chắc đã tương ứng với các danh mục thực sự ngoài thế giới thật. Phương pháp của tác giả đề xuất cơ chế này dựa trên ý tưởng khai thác thông tin danh mục ngầm ngoài thế giới thực, nhưng tác giả chưa chỉ ra các embedding trong cùng một cụm có thuộc một danh mục nào đó ngoài thực tế hay không.
+Việc phân cụm này không tự tạo thêm dữ liệu hay tri thức từ bên ngoài. Nó tổ chức lại những đặc điểm đã có trong không gian embedding, rồi biến cách tổ chức đó thành tín hiệu giám sát bổ sung. Ngoài ra ``danh mục ngầm - implicit category'' chưa chắc đã tương ứng với các danh mục thực sự ngoài thế giới thật. Phương pháp của tác giả đề xuất cơ chế này dựa trên ý tưởng khai thác thông tin danh mục ngầm ngoài thế giới thực, nhưng tác giả chưa chỉ ra các embedding trong cùng một cụm có thuộc một danh mục nào đó ngoài thực tế hay không.
 
 
 Ngoài loss của classifier, nhóm còn quan tâm đến cấu trúc phân cụm. Paper sử dụng K-Medoids để chia các embedding thành $k$ cụm ở một cấp, với $k$ được xác định trước, không xây dựng các cụm cha-con hay phân cụm lồng nhau. Tác giả giải thích việc chọn K-Medoids dựa trên đặc điểm sử dụng điểm dữ liệu thực làm đại diện cụm và khả năng chống chịu nhiễu, outlier,... Tuy nhiên, paper chưa cung cấp thực nghiệm so sánh với các phương pháp phân cụm khác để kiểm chứng lợi ích của lựa chọn này trong CateEA. Phần phân tích tham số của tác giả chỉ khảo sát ảnh hưởng của số cụm $k$ khi sử dụng K-Medoids \cite{feng-etal-2025-cateea}. Và lưu ý rằng việc phân cụm chỉ xảy ra ở quá trình training. Ở quá trình inference, encoder MME đã được huấn luyện với các mục tiêu CRL tạo ra embedding để classifier dự đoán nhãn danh mục ngầm, không chạy lại CRL hay thuật toán clustering.
@@ -244,6 +265,8 @@ Theo cấu hình được ghi nhận trong repository, môi trường thực ngh
     \item \textit{DBP15K:} ba cặp ngôn ngữ ZH-EN, JA-EN và FR-EN, với tỷ lệ cặp thực thể huấn luyện là 30\%.
     \item \textit{MMKB:} FB15K-DB15K và FB15K-YAGO15K, với các tỷ lệ huấn luyện 20\%, 50\% và 80\%.
 \end{itemize}
+Nguồn tải và các gói dữ liệu thực tế sử dụng được tổng hợp tại
+Phụ lục~\ref{app:data_sources}.
 
 Trên DBP15K, nhóm chạy hai chế độ non-iterative và iterative, mỗi chế độ có cấu hình sử dụng và không sử dụng surface form (SF). Trong mã nguồn, cấu hình w/o SF tắt cả đặc trưng tên và ký tự. Trên MMKB, nhóm chạy hai chế độ với ba tỷ lệ huấn luyện, không sử dụng các đặc trưng này. Tổng cộng có 24 cấu hình thực nghiệm.
 
@@ -253,8 +276,6 @@ Mã nguồn ghi nhận Hits@1, Hits@10, Hits@50 và MRR theo hai chiều căn ch
 
 
 \noindent\textit{Giới hạn của giao thức đánh giá:} Nhóm \textbf{chọn checkpoint dựa trên Hits@1 của tập kiểm tra}, thay vì một tập validation độc lập. Vì vậy, tập kiểm tra đồng thời tham gia lựa chọn mô hình và đánh giá kết quả cuối cùng, có thể khiến kết quả được báo cáo lạc quan hơn so với đánh giá trên dữ liệu chưa tham gia lựa chọn. Các kết quả CateEA cần được diễn giải cùng giới hạn này.
-
-
 Các lần chạy được theo dõi tại \href{https://forge.coreweave.com/wandb/keiranoluv-hcmus/cateea-reproduction}{W\&B}.
 % Bổ sung link run/report tương ứng ngay tại từng bảng kết quả.
 
@@ -322,7 +343,7 @@ Trong quá trình tìm hiểu và tái lập, nhóm ghi nhận một số sai kh
 %     Paper đưa các độ tương đồng danh mục qua softmax để chuẩn hoá còn code lại thực hiện phép chia một phần tử cho tổng.
 
 %     \item 
-%     Trong paper, "trọng số danh mục" được nhân với "độ tương đồng thực thể", điểm càng lớn thì ứng viên càng được ưu tiên. Tuy nhiên, code lại nhân "trọng số danh mục" với "khoảng cách thực thể". "Trọng số danh mục" là đại lượng càng lớn càng tốt, "khoảng cách thực thể" là một đại lượng càng nhỏ càng tốt nếu ta muốn xét đến độ tương đồng, vậy mà code lại nhân hai đại lượng này với nhau.
+%     Trong paper, ``trọng số danh mục'' được nhân với ``độ tương đồng thực thể'', điểm càng lớn thì ứng viên càng được ưu tiên. Tuy nhiên, code lại nhân ``trọng số danh mục'' với ``khoảng cách thực thể''. ``Trọng số danh mục'' là đại lượng càng lớn càng tốt, ``khoảng cách thực thể'' là một đại lượng càng nhỏ càng tốt nếu ta muốn xét đến độ tương đồng, vậy mà code lại nhân hai đại lượng này với nhau.
 % \end{itemize}
 
 Nhóm đối chiếu mã nguồn CateEA tại commit

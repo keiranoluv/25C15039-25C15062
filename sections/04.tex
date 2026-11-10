@@ -6,6 +6,22 @@
 
 Từ quan sát trên thì paper DSoM tiếp cận bài toán theo hướng chắt lọc tri thức (knowledge distillation - KD). (Knowledge distillation còn có thể được dịch là chưng cất tri thức.) Tác giả xây dựng các mô hình teacher (giáo viên) sử dụng thông tin đa phương thức (cấu trúc, hình ảnh, văn bản) để dạy cho mô hình student (học sinh) mà mô hình student chỉ sử dụng thông tin về cấu trúc thay vì toàn bộ các phương thức khi suy luận.
 
+Với cách tổ chức teacher và student như trên, đầu vào của
+quá trình huấn luyện và đầu ra khi suy luận được tóm tắt như sau:
+\begin{itemize}
+    \item \textit{Đầu vào:} Một đồ thị gồm các node thực thể và
+    các bộ ba quan hệ $(h,r,t)$, kèm ảnh và mô tả văn bản của
+    thực thể. Ba nguồn thông tin tương ứng là cấu trúc ($S$),
+    hình ảnh ($V$) và mô tả ($D$)~\cite{10.1145/3746027.3754576}.
+    Code nạp các vector đặc trưng ảnh và văn bản đã trích xuất
+    để huấn luyện teacher.
+
+    \item \textit{Đầu ra:} Với truy vấn $(h,r,?)$ hoặc $(?,r,t)$,
+    mô hình xếp hạng các thực thể ứng viên để dự đoán vị trí
+    còn thiếu. Khi suy luận, chỉ student với embedding thực thể
+    và quan hệ được sử dụng.
+\end{itemize}
+
 Ở paper này, tác giả không cố định một giáo viên hay kết hợp các giáo viên theo cùng một cách cho toàn bộ dữ liệu (vì như lập luận đầu tiên phía trên, mô hình có thể tiếp nhận cả những dự đoán thiếu chính xác cho một số điểm dữ liệu nào đó). Vì vậy tác giả sử dụng học tăng cường (Reinforcement Learning - RL) để lựa chọn và kết hợp các giáo viên theo từng truy vấn. Cơ chế này giúp student học từ những nguồn tri thức phù hợp hơn với từng trường hợp cụ thể và không xem mọi phương thức đều có giá trị như nhau.
 
 
@@ -15,7 +31,7 @@ Ngoài việc lựa chọn giáo viên, DSoM còn phân biệt tri thức liên 
 
 Tác giả đề xuất \textit{Neighbor-Decoupled Knowledge Distillation (NDKD)} nhằm phân tách quá trình truyền tri thức từ teacher sang student theo hai nhóm thực thể này.
 
-Khái niệm neighbors và non-neighbors được định nghĩa cụ thể trong phần NDKD.
+% Khái niệm neighbors và non-neighbors được định nghĩa cụ thể trong phần NDKD.
 
 Hai thành phần này tạo nên ý tưởng chính của DSoM: lựa chọn nguồn tri thức phù hợp và chuyển giao tri thức đó cho mô hình chỉ
 sử dụng cấu trúc.
@@ -33,7 +49,10 @@ cũng cải thiện chất lượng dự đoán.
     \label{fig:dsom_motivation}
 \end{figure}
 
-Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu, không liên quan như phân tích ở đoạn đầu tiên. Và tác giả cũng định nghĩa ``dark knowledge'' là tri thức ẩn trong phân phối dự đoán. Student không chỉ học đáp án đúng mà học cả phân phối xác suất thu được từ logits của teacher.
+Về tên của paper, nhóm hiểu tác giả đặt tên ``Dark Side of Modalities'' có nghĩa là sự ảnh hưởng tiêu cực khi một số phương thức có thể chứa thông tin nhiễu
+và thông tin không liên quan như phân tích ở đoạn đầu tiên.
+Tác giả cũng định nghĩa ``dark knowledge'' là tri thức ẩn trong phân phối dự đoán.
+Student không chỉ học đáp án đúng mà học cả phân phối xác suất thu được từ logits của teacher.
 
 
 
@@ -512,6 +531,8 @@ Teacher sử dụng thông tin cấu trúc, hình ảnh
 và văn bản, trong khi student chỉ sử dụng
 thông tin cấu trúc. Các đặc trưng hình ảnh
 và văn bản được tái tạo bằng ViT và BERT.
+Nguồn tải dữ liệu và cách sử dụng đặc trưng cho từng bộ
+được tổng hợp tại Phụ lục~\ref{app:data_sources}.
 
 Nhóm bổ sung pipeline trích xuất đặc trưng ảnh do mã nguồn công
 khai chưa cung cấp script tương ứng. Tuy nhiên, pipeline tái lập
@@ -835,3 +856,5 @@ chưa đủ khẳng định hiệu quả của RL như mô tả trong paper.
 \input{sections/04_02.tex}
 \input{sections/04_03.tex}
 \endgroup
+
+\input{sections/04_discussion}

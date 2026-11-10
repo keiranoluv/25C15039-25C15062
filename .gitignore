@@ -1,6 +1,7 @@
 # Generated PDF and LaTeX build files
 /build/
 /*.pdf
+!/25C15039-25C15062.pdf
 *.aux
 *.log
 *.out

@@ -1,40 +1,57 @@
+\section{Nhận xét và kết luận}
 
-\section{Kết luận}
+\subsection{Nhận xét}
 
-Báo cáo đã phân tích và tái lập hai công trình
-CateEA và DSoM, lần lượt giải quyết bài toán
-căn chỉnh thực thể đa phương thức (MMEA)
-và suy luận trên đồ thị tri thức đa phương thức
-(MKGR).
+Qua hai công trình trong môn Graph Machine Learning, nhóm
+hiểu rõ hơn hai bài toán trên đồ thị tri thức đa phương thức.
+MMEA tìm các thực thể tương ứng giữa hai đồ thị, còn MKGR
+xếp hạng thực thể để hoàn thiện truy vấn quan hệ. Cả hai đều
+học biểu diễn thực thể, nhưng cách sử dụng biểu diễn và mục
+đích đánh giá khác nhau.
 
-Hai công trình có cách tiếp cận khác nhau.
-CateEA khai thác thông tin danh mục ngầm
-thông qua phân cụm để bổ sung tín hiệu
-giám sát cho quá trình căn chỉnh thực thể.
-Trong khi đó, DSoM sử dụng cơ chế lựa chọn
-teacher và Knowledge Distillation để truyền
-tri thức đa phương thức sang student
-chỉ sử dụng cấu trúc.
+Việc đối chiếu paper với mã nguồn giúp nhóm hiểu phương pháp
+qua từng bước xử lý dữ liệu, tạo nhãn và tối ưu tham số.
+Những sai khác trong cách ghép nhãn giả của CateEA, cách cập
+nhật policy và tính NEKD của DSoM cho thấy cần kiểm tra cả
+quá trình triển khai khi diễn giải kết quả thực nghiệm.
 
-Kết quả tái lập phần lớn phản ánh các xu hướng
-được công bố, đồng thời cho thấy một số
-sai khác giữa phương pháp và mã nguồn.
-Đối với CateEA, nhóm ghi nhận những vấn đề
-liên quan đến cách gán nhãn giả và điều chỉnh
-độ tương đồng. Đối với DSoM, nhóm phát hiện
-policy RC không được cập nhật trong cấu hình
-mã nguồn công khai.
+Một điểm thú vị mà nhóm nhận ra là các đặc trưng ảnh, tên
+hoặc mô tả văn bản được trích xuất sẵn từ mô hình pretrained
+rồi giữ cố định. CateEA dùng đặc trưng ảnh từ ResNet-152 và
+đặc trưng tên từ GloVe; DSoM dùng ViT và BERT cho ảnh và mô
+tả~\cite{feng-etal-2025-cateea,10.1145/3746027.3754576}.
+Các bộ trích xuất này không được cập nhật theo loss của hai
+bài toán. GAT, các lớp chiếu và mô hình teacher/student vẫn
+được huấn luyện theo những giai đoạn tương ứng.
 
-Qua hai công trình, nhóm nhận thấy việc
-đề xuất một cơ chế học mới không đồng nghĩa
-với việc đóng góp của từng thành phần
-đã được kiểm chứng đầy đủ. Các thực nghiệm
-ablation, việc đối chiếu mã nguồn và đánh giá
-trên nhiều random seed là cần thiết để
-xác định mức độ hiệu quả và tính ổn định
-của phương pháp.
+Theo nhóm tìm hiểu, đây là cách dùng mô hình pretrained như
+bộ trích xuất đặc trưng cố định trong transfer
+learning~\cite{pytorch_transfer_learning}. Cách làm này tận
+dụng biểu diễn đã học, giảm tính toán gradient và bộ nhớ so
+với việc fine-tune toàn bộ backbone. Trích xuất một lần còn
+cho phép tái sử dụng cùng đặc trưng qua nhiều cấu hình.
+Nhóm xem đây là những lợi ích giúp lý giải lựa chọn của hai
+pipeline; nhóm chưa thực nghiệm đối chiếu trực tiếp với
+fine-tuning.
 
-Nhìn chung, quá trình phân tích và tái lập
-không chỉ giúp nhóm hiểu rõ hơn hai phương pháp mà còn làm rõ vai trò của việc kiểm chứng
-thực nghiệm khi đánh giá một công trình
-nghiên cứu về học máy trên dữ liệu đồ thị.
+Ngoài mã nguồn, nhóm còn kiểm tra cách chia dữ liệu, sự
+trùng lặp giữa các tập và nguồn đặc trưng đầu vào. Trường hợp
+validation DB15K trùng với train/test, cùng sai khác ở đặc
+trưng ảnh tái tạo, cho thấy dữ liệu và giao thức đánh giá cần
+được kiểm tra đồng thời với phương pháp. Những giới hạn này
+cần được ghi nhận khi đối chiếu kết quả với paper.
+
+\subsection{Kết luận}
+
+Nhóm đã phân tích và tái lập các cấu hình CateEA và DSoM
+được trình bày trong báo cáo, thực hiện thêm các thí nghiệm
+cho DSoM, công bố mã nguồn và ghi nhận kết quả bằng W\&B.
+Quá trình này cũng giúp nhóm xác định các sai khác giữa mô
+tả phương pháp, mã nguồn và điều kiện tái lập.
+
+Các lần chạy tái hiện xu hướng cải thiện từ SF và iterative
+của CateEA. Với DSoM, learned RC chưa cho thấy ưu thế ổn định
+so với các cách chọn teacher đơn giản trong những cấu hình
+đã chạy. Các nhận xét này nằm trong phạm vi thực nghiệm với
+một seed và những giới hạn về dữ liệu, đặc trưng, lựa chọn
+checkpoint đã công bố.
