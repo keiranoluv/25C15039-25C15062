@@ -42,7 +42,7 @@ cũng cải thiện chất lượng dự đoán.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{figures/fig1_dsom.png}
+    \includegraphics[width=\linewidth]{figures/fig1_dsom.pdf}
     \caption{Minh họa những hạn chế khi kết hợp các phương thức
     trong suy luận trên đồ thị tri thức đa phương thức và vai trò
     của tri thức từ phân phối dự đoán.  Nguồn: \cite{10.1145/3746027.3754576}, Hình 1.}
@@ -56,6 +56,7 @@ Student không chỉ học đáp án đúng mà học cả phân phối xác su�
 
 
 
+\begin{samepage}
 \subsection{Phương pháp DSoM}
 
 Kiến trúc tổng thể của DSoM được trình bày trong
@@ -64,10 +65,12 @@ ba thành phần chính: xây dựng các mô hình giáo viên
 theo từng phương thức, lựa chọn tổ hợp giáo viên
 bằng học tăng cường và truyền tri thức sang mô hình
 học sinh thông qua NDKD.
+\par
+\end{samepage}
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=\textwidth]{figures/fig2_dsom.png}
+    \includegraphics[width=\textwidth]{figures/fig2_dsom.pdf}
     \caption{Kiến trúc tổng thể DSoM gồm ba giai đoạn:
     huấn luyện các mô hình giáo viên theo từng phương thức,
     lựa chọn tổ hợp giáo viên bằng Reinforced Combination (RC)
@@ -489,22 +492,7 @@ Hình~\ref{alg:dsom} tóm tắt ba giai đoạn huấn luyện teacher,
 huấn luyện student cùng policy và suy luận bằng student.
 \input{sections/dsom_pseudocode}
 
-Như vậy, theo cách hiểu của nhóm, DSoM
-có thể được nhìn nhận qua hai câu hỏi:
-student nên học từ những teacher nào,
-và student nên học những thông tin gì
-từ kết quả dự đoán của các teacher đó?
 
-Reinforced Teacher Combination giải quyết
-câu hỏi thứ nhất thông qua học tăng cường,
-còn NDKD giải quyết câu hỏi thứ hai thông
-qua việc phân tách phân phối dự đoán.
-
-\begin{samepage}
-Đây cũng là hai thành phần mà nhóm cho
-rằng thể hiện rõ nhất ý tưởng của tác giả
-trong công trình DSoM.
-\end{samepage}
 
 
 \subsection{Tái lập thực nghiệm}
@@ -525,6 +513,12 @@ validation mỗi 3 epochs và early stopping
 patience 10. Student sử dụng KD temperature 4,
 trọng số KD bằng 2 và $\alpha=\beta=1$.
 
+Student vẫn dùng \texttt{ReduceLROnPlateau} với
+\texttt{mode=min} theo validation Hits@10; các kết quả báo
+cáo chưa áp dụng sửa đổi sang \texttt{max}
+(mục~\ref{sec:dsom_author_correspondence}).
+
+
 Nhóm tái lập trên sáu bộ dữ liệu gồm DB15K,
 MKG-W, MKG-Y, FB15K-237, WN18 và WN9.
 Teacher sử dụng thông tin cấu trúc, hình ảnh
@@ -534,19 +528,25 @@ và văn bản được tái tạo bằng ViT và BERT.
 Nguồn tải dữ liệu và cách sử dụng đặc trưng cho từng bộ
 được tổng hợp tại Phụ lục~\ref{app:data_sources}.
 
+\begin{samepage}
 Nhóm bổ sung pipeline trích xuất đặc trưng ảnh do mã nguồn công
 khai chưa cung cấp script tương ứng. Tuy nhiên, pipeline tái lập
 sử dụng đầu vào $384\times384$, khác với cấu hình
 \texttt{vit-base-patch16-224} được tác giả công bố.
 Đây là sai khác trong triển khai của nhóm; ảnh hưởng đến kết quả
 chưa được định lượng.
+\par
+\end{samepage}
 
+\begin{samepage}
 Checkpoint của teacher được chọn theo
 validation Hits@10, còn checkpoint của
 student được chọn theo validation MRR.
 Các kết quả test được lấy từ
 \texttt{final\_result} của checkpoint
 được chọn thay vì metric ở epoch cuối.
+\par
+\end{samepage}
 
 Về giao thức đánh giá student, với mỗi bộ ba trong tập kiểm tra,
 nhóm thực hiện cả dự đoán đuôi $(h,r,?)$ và dự đoán đầu
@@ -561,7 +561,10 @@ nhóm báo thêm raw trên cùng checkpoint để đối chiếu. Các bộ lọ
 được xây dựng từ các bộ ba huấn luyện và các bộ ba nghịch đảo
 tương ứng.
 
+\begin{samepage}
 \noindent\textit{Giới hạn về dữ liệu:} Tập validation của DB15K trong nguồn dữ liệu công khai có \textbf{các bộ ba trùng với tập huấn luyện và tập kiểm tra}. Nhóm giữ nguyên cách chia dữ liệu này trong các thực nghiệm đối chiếu. Do validation được sử dụng để chọn checkpoint, sự trùng lặp làm giảm tính độc lập của quá trình lựa chọn mô hình và có thể khiến kết quả đánh giá lạc quan hơn. Vì vậy, các kết quả trên DB15K cần được diễn giải cùng giới hạn này.
+\par
+\end{samepage}
 
 Nhóm sử dụng ba chế độ thực nghiệm:
 

@@ -13,9 +13,8 @@ Nhóm sử dụng \texttt{mmkg.zip} do
 \href{https://github.com/zjukg/MEAformer}{MEAformer} cung cấp
 (\href{https://drive.google.com/file/d/1VIWcc3KDcLcRImeSrF2AyhetBLq_gsnx/view}{liên kết tải}).
 Gói này chứa đồ thị, cặp căn chỉnh, thuộc tính và đặc trưng
-ảnh có sẵn trong \texttt{pkls/} cho ba cặp DBP15K,
-FB15K--DB15K và FB15K--YAGO15K, kèm GloVe và tên đã dịch của
-DBP15K. Nhóm dùng các đặc trưng ảnh trong gói để chạy CateEA.
+ảnh có sẵn trong \texttt{pkls/}, kèm GloVe và tên đã dịch
+của DBP15K.
 
 \subsection{DSoM}
 
@@ -40,9 +39,7 @@ DBP15K. Nhóm dùng các đặc trưng ảnh trong gói để chạy CateEA.
     Với MKG-W, \texttt{ent\_links} ánh xạ ID Wikidata của đồ
     thị sang ID DBpedia của ảnh và mô tả.
 
-    \item \textit{FB15K-237 và WN18:} Các file
-    \texttt{train.tsv}, \texttt{dev.tsv}, \texttt{test.tsv}
-    lấy từ \href{https://github.com/yao8839836/kg-bert/tree/f3f260309c5e2986467a66e0e68fa7f53b1a150e/data}{KG-BERT,
+    \item \textit{FB15K-237 và WN18:} Đồ thị lấy từ \href{https://github.com/yao8839836/kg-bert/tree/f3f260309c5e2986467a66e0e68fa7f53b1a150e/data}{KG-BERT,
     commit \texttt{f3f2603}}. Mô tả lấy từ
     \texttt{entity2textlong.txt} của FB15k-237 và
     \texttt{entity2text.txt} của WN18. Ảnh lấy từ
@@ -52,19 +49,14 @@ DBP15K. Nhóm dùng các đặc trưng ảnh trong gói để chạy CateEA.
     \texttt{FB15k-images/} và \texttt{wn18-images/}.
     Với WN18, thêm tiền tố \texttt{n} vào ID synset để tìm ảnh.
 
-    \item \textit{WN9:} Các file \texttt{train},
-    \texttt{valid}, \texttt{test}, \texttt{ent\_dscp.txt} và
-    \texttt{ent\_name.txt} lấy từ
+    \item \textit{WN9:} Đồ thị và mô tả lấy từ
     \href{https://github.com/OreOZhao/MoSE4MKGC/tree/192d9ff2882b5be6ef8239a37cbd90c5dd102b5a/src_data/WN9}{MoSE,
     commit \texttt{192d9ff}}. Đặc trưng ảnh và văn bản được
     lấy từ WN18 bằng ánh xạ ID synset, không ghép theo thứ tự
     hàng.
 \end{itemize}
 
-Đối với DSoM, nhóm tái tạo đặc trưng ảnh bằng ViT và văn bản
-bằng BERT từ các nguồn trên; riêng WN9 tái sử dụng các hàng
-đặc trưng WN18 tương ứng. Đây là đặc trưng của pipeline tái
-lập, chưa được xác nhận trùng với các file đặc trưng tác giả
-đã sử dụng. Tên thư mục \texttt{MMKB-DB15K} trong mã nguồn
-DSoM chỉ bộ DB15K cho bài toán suy luận; cặp FB15K--DB15K của
-CateEA được sử dụng cho bài toán căn chỉnh hai đồ thị.
+Nhóm tái tạo đặc trưng ảnh và văn bản của DSoM bằng ViT và
+BERT từ các nguồn trên, chưa xác nhận trùng với các file
+đặc trưng tác giả đã sử dụng. Trong DSoM, \texttt{MMKB-DB15K} là bộ dữ liệu suy luận DB15K;
+cặp FB15K--DB15K của CateEA phục vụ căn chỉnh hai đồ thị.

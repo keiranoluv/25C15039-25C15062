@@ -84,7 +84,7 @@ Sau khi có embedding của từng modality, joint embedding được tạo bằ
 \noindent\textit{Nhận xét của nhóm:} $w_m$ là tham số dùng chung cho mọi thực thể, nên mô hình chỉ học được modality nào nhìn chung đáng tin hơn, chứ không điều chỉnh riêng cho từng thực thể.
 Cách này đơn giản hơn MEAformer\cite{chen2023meaformer}, nơi trọng số modality thay đổi theo từng thực thể.
 Khi một thực thể thiếu ảnh hoặc thiếu thuộc tính thì modality đó vẫn được gán trọng số như các thực thể khác.
-Ngoài ra, nhóm thấy nhóm đặc trưng SF ảnh hưởng rất lớn đến kết quả.
+Ngoài ra, nhóm thấy đặc trưng SF ảnh hưởng rất lớn đến kết quả.
 Ở cả bài báo và kết quả tái lập trên DBP15K, Hits@1 khi có SF đều trên 94\%, còn khi không có SF chỉ khoảng 74-78\% ở chế độ non-iterative. Điều này cho thấy việc bổ sung nhóm đặc trưng SF cải thiện đáng kể kết quả trên DBP15K. Trong cấu hình tái lập, w/o SF tắt cả đặc trưng tên và ký tự, nên so sánh này chưa tách riêng đóng góp của tên thực thể hay của từng phương thức.
 
 \paragraph{Contrastive Representation Learning (CRL)}
@@ -191,11 +191,14 @@ Ký hiệu $\hat{\mathbf{h}}_x$ là joint embedding của $x$; $\boldsymbol{\mu}
 
 Nhóm cũng cho rằng CAE đang dựa trên giả thuyết: khoảng cách giữa các centroid thể hiện mức độ phù hợp giữa các danh mục cho việc căn chỉnh. Vấn đề nhóm thấy là centroid là biểu diễn giá trị trung bình, chưa phản ánh độ phân tán thực thể bên trong nhóm đó. Ngoài ra nếu classifier dự đoán sai nhãn, sai số này có thể ảnh hưởng đến cả centroid và trọng số hiệu chỉnh. Vì vậy, CAE không đảm bảo luôn cải thiện xếp hạng. 
 
+\begin{samepage}
 Hình~\ref{alg:cateea} tóm tắt luồng khai thác danh mục ngầm
 được nhóm diễn giải lại theo mô tả phương pháp trong bài báo.
 Giả mã tách hai giai đoạn huấn luyện và suy luận; các sai khác
 của mã nguồn công khai được phân tích tại
 mục~\ref{sec:cateea_code_comparison}.
+\par
+\end{samepage}
 
 \begin{figure}[t]
 \footnotesize
@@ -268,7 +271,10 @@ Theo cấu hình được ghi nhận trong repository, môi trường thực ngh
 Nguồn tải và các gói dữ liệu thực tế sử dụng được tổng hợp tại
 Phụ lục~\ref{app:data_sources}.
 
+\begin{samepage}
 Trên DBP15K, nhóm chạy hai chế độ non-iterative và iterative, mỗi chế độ có cấu hình sử dụng và không sử dụng surface form (SF). Trong mã nguồn, cấu hình w/o SF tắt cả đặc trưng tên và ký tự. Trên MMKB, nhóm chạy hai chế độ với ba tỷ lệ huấn luyện, không sử dụng các đặc trưng này. Tổng cộng có 24 cấu hình thực nghiệm.
+\par
+\end{samepage}
 
 Các script đặt số epoch là 1000, learning rate $5\times10^{-4}$, batch size 512, random seed 42, $\tau_1=0.1$, $\tau_2=0.4$ và CSLS với $k=3$. Mô hình được đánh giá sau mỗi 50 epoch. Với chế độ iterative, quá trình bổ sung cặp thực thể được bật từ epoch có chỉ số 500. Chi tiết từng cấu hình được lưu trong các script của repository.
 
@@ -370,10 +376,17 @@ Nhóm đối chiếu mã nguồn CateEA tại commit
   sang nhãn giả. Ví dụ chỉ minh họa chỉ số, không phải dữ
   liệu quan sát từ một lần chạy cụ thể.
 
+  \Needspace{11\baselineskip}
   \item \textit{Số cụm:} mã nguồn gán trực tiếp
   \texttt{num\_category = 5}, trong khi mục~4.1.3 của bài báo
   công bố sử dụng 10 danh mục.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/myrun.py\#L466-L474}{CateEA: số cụm cố định trong mã nguồn.}}
+  Classifier dùng \texttt{num\_classes+1} đầu ra: 5 cụm sinh
+  nhãn $\{0,\ldots,4\}$, nhưng mô hình xuất 6 logits và lấy
+  argmax trên cả 6. Mã nguồn chưa giải thích đầu ra bổ sung;
+  nhóm chưa định lượng ảnh hưởng.
+  \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/clucls.py\#L175-L200}{CateEA: số đầu ra của classifier.}}
+
 
   \item \textit{Chuẩn hóa trọng số danh mục:} bài báo sử dụng
   softmax, còn code tính $w_{ij}=s_{ij}/\sum_k s_{ik}$.
