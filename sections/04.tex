@@ -1,8 +1,12 @@
 \section{Dark Side of Modalities: Reinforced Multimodal Distillation for Multimodal Knowledge Graph Reasoning (DSoM)}
 
+Đây là paper thứ hai mà nhóm chọn để phân tích và viết báo cáo. Chi tiết về paper sẽ được trình bày ở các phần tiếp theo.
+
 \subsection{Bài toán và ý tưởng chính}
 
-Đối với bài toán MKGR, ngoài cấu trúc quan hệ, mô hình còn có thể sử dụng những thông tin bổ sung như hình ảnh và văn bản để dự đoán thực thể còn thiếu. Tuy nhiên thì việc kết hợp nhiều phương thức không đồng nghĩa với việc toàn bộ các phương thức đều đóng góp tích cực cho mọi dự đoán. Ví dụ một phương thức có thể cung cấp thông tin hữu ích đối với thực thể này nhưng lại chứa thông tin nhiễu hoặc không liên quan tới thực thể khác.
+Đối với bài toán MKGR, ngoài cấu trúc quan hệ, mô hình còn có thể sử dụng kết hợp những thông tin bổ sung như hình ảnh và văn bản để dự đoán thực thể còn thiếu.
+Tuy nhiên, không phải phương thức nào cũng mang lại thông tin hữu ích cho tất cả các trường hợp dự đoán.
+Ví dụ một phương thức có thể cung cấp thông tin hữu ích đối với thực thể này nhưng lại chứa thông tin nhiễu hoặc không liên quan tới thực thể khác.
 
 Từ quan sát trên thì paper DSoM tiếp cận bài toán theo hướng chắt lọc tri thức (knowledge distillation - KD). (Knowledge distillation còn có thể được dịch là chưng cất tri thức.) Tác giả xây dựng các mô hình teacher (giáo viên) sử dụng thông tin đa phương thức (cấu trúc, hình ảnh, văn bản) để dạy cho mô hình student (học sinh) mà mô hình student chỉ sử dụng thông tin về cấu trúc thay vì toàn bộ các phương thức khi suy luận.
 
@@ -354,10 +358,10 @@ Hai phân phối này được so sánh bằng KL divergence:
 NEKD giúp student điều chỉnh xác suất dành cho nhóm neighbors sao cho gần với teacher hơn.
 
 Công thức~\eqref{eq:nekd_mean} và ví dụ trên trình bày
-cách lấy \textbf{trung bình} xác suất của các thực thể thuộc nhóm
+cách lấy \textit{trung bình} xác suất của các thực thể thuộc nhóm
 neighbors theo bài báo gốc. Tuy nhiên, theo tài liệu giao thức
 thực nghiệm của repository, mã nguồn được sử dụng trong
-các lần tái lập tính xác suất nhóm neighbors bằng phép \textbf{tổng}:
+các lần tái lập tính xác suất nhóm neighbors bằng phép \textit{tổng}:
 
 \begin{equation}
     p_N^{\mathrm{impl}} = \sum_{e \in N} p_e,

@@ -1,8 +1,15 @@
 \section{CateEA: Enhancing Entity Alignment via Implicit Category Supervision}
 
+Đây là paper mà nhóm chọn để thực hiện seminar. Phân tích chi tiết về công trình này sẽ được trình bày bên dưới.
+
 \subsection{Bài toán và ý tưởng chính} %Hùng
 % Nhắc đầu vào và đầu ra trước khi trình bày ý tưởng chính.
-Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể thành một vector duy nhất, rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng. Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính tương đương của hai thực thể. Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể ``Chow Chow'' (một giống chó) và ``Lion'' (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau, trong khi thực tế đây là hai loài khác nhau. Mô hình chỉ nhìn vào độ tương đồng của vector đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau, trong khi con người nhìn vào là phân biệt được ngay.
+Các phương pháp MMEA hiện tại thường tổng hợp các nguồn thông tin của thực thể thành một vector duy nhất,
+rồi so sánh độ tương đồng giữa các vector này để chọn ra các thực thể tương ứng.
+Tuy nhiên, độ đo này không phải lúc nào cũng thể hiện đúng tính tương đương của hai thực thể.
+Ví dụ ở hình~\ref{fig:cateea_idea}, thực thể ``Chow Chow'' (một giống chó) và ``Lion'' (sư tử) có thể bị căn chỉnh nhầm với nhau vì hình ảnh của chúng có nhiều nét giống nhau,
+trong khi thực tế đây là hai loài vật khác nhau.
+Mô hình chỉ nhìn vào độ tương đồng của vector đặc trưng nên không biết được hai thực thể này thuộc hai danh mục khác nhau (danh mục ở đây có thể là loài vật), trong khi con người nhìn vào là phân biệt được ngay.
 
 Để làm rõ bài toán căn chỉnh mà CateEA giải quyết, đầu vào
 và đầu ra của mô hình được tóm tắt như sau:
@@ -28,7 +35,7 @@ và đầu ra của mô hình được tóm tắt như sau:
 \label{fig:cateea_idea}
 \end{figure}
 
-Để giải quyết vấn đề này, nhóm tác giả đã đề xuất phương pháp CateEA - với ý tưởng chính là đưa thông tin danh mục ngầm vào quá trình căn chỉnh thực thể để giảm những nhầm lẫn như trên.
+Nhóm tác giả đã đề xuất phương pháp CateEA - với ý tưởng chính là đưa thông tin danh mục ngầm vào quá trình căn chỉnh thực thể để giảm những nhầm lẫn như trên.
 
 \subsection{Phương pháp và phân tích}
 
@@ -82,10 +89,11 @@ Sau khi có embedding của từng modality, joint embedding được tạo bằ
 
 
 \noindent\textit{Nhận xét của nhóm:} $w_m$ là tham số dùng chung cho mọi thực thể, nên mô hình chỉ học được modality nào nhìn chung đáng tin hơn, chứ không điều chỉnh riêng cho từng thực thể.
-Cách này đơn giản hơn MEAformer\cite{chen2023meaformer}, nơi trọng số modality thay đổi theo từng thực thể.
+Cách này đơn giản hơn việc coi trọng số modality thay đổi theo từng thực thể như MEAformer\cite{chen2023meaformer}.
 Khi một thực thể thiếu ảnh hoặc thiếu thuộc tính thì modality đó vẫn được gán trọng số như các thực thể khác.
-Ngoài ra, nhóm thấy đặc trưng SF ảnh hưởng rất lớn đến kết quả.
-Ở cả bài báo và kết quả tái lập trên DBP15K, Hits@1 khi có SF đều trên 94\%, còn khi không có SF chỉ khoảng 74-78\% ở chế độ non-iterative. Điều này cho thấy việc bổ sung nhóm đặc trưng SF cải thiện đáng kể kết quả trên DBP15K. Trong cấu hình tái lập, w/o SF tắt cả đặc trưng tên và ký tự, nên so sánh này chưa tách riêng đóng góp của tên thực thể hay của từng phương thức.
+Ngoài ra, nhóm còn thấy đặc trưng SF ảnh hưởng rất lớn đến kết quả.
+Ở cả bài báo và kết quả tái lập trên DBP15K, Hits@1 khi có SF đều trên 94\%, còn khi không có SF chỉ khoảng 74-78\% ở chế độ non-iterative.
+Điều đó chứung minh rằng việc bổ sung nhóm đặc trưng SF cải thiện đáng kể kết quả trên DBP15K. 
 
 \paragraph{Contrastive Representation Learning (CRL)}
 
@@ -194,7 +202,7 @@ Nhóm cũng cho rằng CAE đang dựa trên giả thuyết: khoảng cách gi�
 \begin{samepage}
 Hình~\ref{alg:cateea} tóm tắt luồng khai thác danh mục ngầm
 được nhóm diễn giải lại theo mô tả phương pháp trong bài báo.
-Giả mã tách hai giai đoạn huấn luyện và suy luận; các sai khác
+Mã giả tách hai giai đoạn huấn luyện và suy luận; các sai khác
 của mã nguồn công khai được phân tích tại
 mục~\ref{sec:cateea_code_comparison}.
 \par
@@ -382,7 +390,7 @@ Nhóm đối chiếu mã nguồn CateEA tại commit
   công bố sử dụng 10 danh mục.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/myrun.py\#L466-L474}{CateEA: số cụm cố định trong mã nguồn.}}
   Classifier dùng \texttt{num\_classes+1} đầu ra: 5 cụm sinh
-  nhãn $\{0,\ldots,4\}$, nhưng mô hình xuất 6 logits và lấy
+  nhãn $\{0,\ldots,4\}$ nhưng mô hình xuất 6 logits và lấy
   argmax trên cả 6. Mã nguồn chưa giải thích đầu ra bổ sung;
   nhóm chưa định lượng ảnh hưởng.
   \footnote{\href{https://github.com/Melkor0007/CateEA/blob/8c277f3292b98f22aaaecb75d01ac44487cefed6/src/clucls.py\#L175-L200}{CateEA: số đầu ra của classifier.}}
